@@ -1,0 +1,50 @@
+# Ignore node_modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dependency directories
+.DS_Store
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Build output directories
+dist/
+build/
+
+# Cache directories
+.cache/
+tmp/
+
+# Editor-specific files
+.vscode/
+.idea/
+*.swp
+
+# Operating system files
+Thumbs.db
+Desktop.ini
+
+# Ignore coverage reports
+coverage/
+
+# Ignore test output
+*.out
+*.test.js.snap
+
+# Ignore compiled files
+*.pyc
+*.pyo
+__pycache__/
+
+# Ignore custom config files
+*.config.js
+*.local.js
