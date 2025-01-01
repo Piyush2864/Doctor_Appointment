@@ -3,33 +3,86 @@ import DoctorInfo from '../Models/doctorModel.js';
 import PatientInfo from '../Models/patientModel.js';
 
 
-export const bookAppointmentController = async(req, res)=> {
-    const { doctorId, patientId, date, time, reason } = req.body;
+export const bookAppointmentController = async (req, res) => {
+    const { doctorId, patientId, date, timeSlot, reasonForVisit } = req.body;
 
     try {
+        
         const doctor = await DoctorInfo.findById(doctorId);
-        if(!doctor) {
+        if (!doctor) {
             return res.status(404).json({
                 success: false,
-                message: 'Doctor not found.'
+                message: 'Doctor not found.',
             });
         }
 
+        
         const patient = await PatientInfo.findById(patientId);
-        if(!patient){
+        if (!patient) {
             return res.status(404).json({
                 success: false,
-                message: 'Patient not found.'
+                message: 'Patient not found.',
             });
         }
 
+        
+        const day = new Date(date).toLocaleString('en-US', { weekday: 'long' });
+        const shiftsForDay = doctor.shifts.filter((shift) => shift.day === day);
+
+        if (shiftsForDay.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: `Doctor is not available on ${day}.`,
+            });
+        }
+
+        
+        let isValidSlot = false;
+        for (const shift of shiftsForDay) {
+            for (const timing of shift.timings) {
+                const generatedSlots = generateSlots(
+                    timing.startTime,
+                    timing.endTime,
+                    timing.slotDuration
+                );
+
+                if (generatedSlots.includes(timeSlot)) {
+                    isValidSlot = true;
+                    break;
+                }
+            }
+            if (isValidSlot) break;
+        }
+
+        if (!isValidSlot) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid time slot. Please select a valid slot.',
+            });
+        }
+
+        
+        const existingAppointment = await AppointmentInfo.findOne({
+            doctorId,
+            date,
+            timeSlot,
+        });
+
+        if (existingAppointment) {
+            return res.status(400).json({
+                success: false,
+                message: 'The selected time slot is already booked. Please choose another slot.',
+            });
+        }
+
+        // Book the appointment
         const appointment = new AppointmentInfo({
             doctor: doctorId,
             patient: patientId,
             date,
-            time,
-            reason,
-            status: 'Pending'
+            timeSlot,
+            reasonForVisit,
+            status: 'Pending',
         });
 
         await appointment.save();
@@ -37,16 +90,17 @@ export const bookAppointmentController = async(req, res)=> {
         return res.status(201).json({
             success: true,
             message: 'Appointment booked successfully.',
-            data: appointment
+            data: appointment,
         });
     } catch (error) {
-        console.error('Error booking appointment.:', error);
+        console.error('Error booking appointment:', error);
         return res.status(500).json({
             success: false,
-            message: 'Server error.'
+            message: 'Server error.',
         });
     }
 };
+
 
 
 export const getAppointmentByDoctorController = async(req, res)=>{
@@ -181,4 +235,63 @@ export const getAppointmentByIdController = async(req, res)=> {
             message: 'Server error.'
         });
     }
+};
+
+
+export const getAvailableSlotsController = async(req, res) => {
+    try {
+        const { doctorId, date } = req.body;
+
+        const doctor = await DoctorInfo.findById(doctorId);
+        if(!doctor) {
+            return res.status(404).json({
+                success: false,
+                message:'Doctor not found.'
+            });
+        }
+
+        const bookedAppointments = await Appointment.find({
+            doctorId,
+            appointmentDate: date,
+        });
+
+        const bookSlots = bookedAppointments.map((appt)=> appt.timeSlot);
+
+        const day = new Date(date).toLocaleString('en-US', { weekday: 'long'});
+
+        const shiftsForDay = doctor.shifts.filter((shift)=> shift.day === day);
+
+        if(shiftsForDay.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: `Doctor is not available on ${day}`
+            });
+        }
+
+        let availableSlots = [];
+        for (const shift of shiftsForDay) {
+            for (const timing of shift.timings) {
+                const slots = generateSlots(
+                    timing.startTime,
+                    timing.endTime,
+                    timing.slotDuration
+                );
+
+                const freeSlots =slots.filter((slot)=> !bookSlots.includes(slot));
+                availableSlots = [...availableSlots, ...freeSlots];
+            }
+        }
+        
+        return res.status(200).json({
+            success: true,
+            message: 'Slots generated',
+            data: availableSlots
+        });
+    } catch (error) {
+        console.error('Error fetching available slots:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Server error'
+        })
+    };
 };
