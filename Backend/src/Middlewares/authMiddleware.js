@@ -3,15 +3,15 @@ import JWT from 'jsonwebtoken';
 
 export const authenticateUser = (req, res, next) => {
     try {
-        const token = req.header('Authorization');
+        const token = req.headers.authorization?.split(" ")[1];
         if (!token) {
             return res.status(401).json({
                 success: false,
                 message: 'Access Denied! No token provided'
             });
         }
-
-        const decoded = JWT.verify(token, process.env.JWT_SECRET);
+        const secretKey = process.env.JWT_SECRET || 'Piyush123'
+        const decoded = JWT.verify(token, secretKey);
         req.user = decoded;
         next();
     } catch (error) {
