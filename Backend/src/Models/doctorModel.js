@@ -29,12 +29,12 @@ const doctorSchema = new Schema({
     },
 
     experience: {
-        type: Number,
+        type: String,
         required: true
     },
 
     contactNumber: {
-        type: Number,
+        type: String,
         required: true
     },
 

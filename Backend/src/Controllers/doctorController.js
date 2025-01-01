@@ -64,7 +64,8 @@ export const loginDoctorController = async(req, res)=> {
             });
         }
 
-        const token = JWT.sign({id: doctor._id, role: 'Doctor'}, process.env.JWT_SECRET, { expiresIn: "1d"});
+        const secretKey = process.env.JWT_SECRET || "Piyush123";
+        const token = JWT.sign({id: doctor._id, role: 'Doctor'}, secretKey, { expiresIn: "1d"});
 
         return res.status(200).json({
             success: true,

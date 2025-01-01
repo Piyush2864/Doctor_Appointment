@@ -1,6 +1,6 @@
 import express from 'express';
 import { deletePatientController, getAllPatientController, getPatientByIdController, loginPatientController, registerPatientController, updatePatientController } from '../Controllers/patientController.js';
-import authenticateUser, { authorizeRoles } from '../Middlewares/authMiddleware.js'
+import  { authenticateUser, authorizeRoles } from '../Middlewares/authMiddleware.js'
 
 
 const router = express.Router();
