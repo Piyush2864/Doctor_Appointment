@@ -19,7 +19,7 @@ const patientSchema = new Schema({
     },
 
     age: {
-        type: Number,
+        type: String,
         required: true
     },
 
@@ -30,7 +30,7 @@ const patientSchema = new Schema({
     },
 
     contactNumber: {
-        type: Number,
+        type: String,
         required: true
     },
     medicalHistory: [

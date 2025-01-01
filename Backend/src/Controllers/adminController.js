@@ -59,12 +59,13 @@ export const loginAdminController = async(req, res)=> {
                 message: 'Invalid credentials!'
             });
         }
-
-        const token = JWT.sign({ id: admin._id, role: 'Admin'}, process.env.JWT_SECRET, {expiresIn: '1d'});
+        const secretKey = process.env.JWT_SECRET || 'Piyush123'
+        const token = JWT.sign({ id: admin._id, role: 'Admin'}, secretKey, {expiresIn: '1d'});
 
         return res.status(200).json({
             success: false,
             message: 'Login successfull.',
+            token,
             data: admin
         });
     } catch (error) {

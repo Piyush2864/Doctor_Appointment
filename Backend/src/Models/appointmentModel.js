@@ -19,6 +19,11 @@ const appointmentSchema = new Schema({
         required: true
     },
 
+    timeSlot: { 
+        type: String,
+        required: true 
+    }, // E.g., 10:00 AM - 11:00 AM
+
     status: {
         type: String,
         enum: ['Pending', 'Confirmed', 'Cancelled', 'Completed'],

@@ -47,7 +47,7 @@ export const loginPatientController = async(req, res)=> {
     const { email, password } = req.body;
 
     try {
-        const patient = await PatientInfo.findone({ email });
+        const patient = await PatientInfo.findOne({ email });
         if(!patient){
             return res.status(404).json({
                 success: false,
@@ -62,8 +62,8 @@ export const loginPatientController = async(req, res)=> {
                 message: 'Invalid credentials.'
             });
         }
-
-        const token = JWT.sign({id: patient._id, role: 'Patient'}, process.env.JWT_SECRET, { expiresIn: "1d"});
+        const secretkey = process.env.JWT_SECRET || 'Piyush123'
+        const token = JWT.sign({id: patient._id, role: 'Patient'}, secretkey, { expiresIn: "1d"});
 
         return res.status(200).json({
             success: true,
