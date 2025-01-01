@@ -4,7 +4,7 @@ import JWT from 'jsonwebtoken';
 
 
 export const registerDoctorController = async (req, res) => {
-    const { name, email, password, specialization, description, experience, contactNumber, timings } = req.body;
+    const { name, email, password, specialization, description, experience, contactNumber, timings, clinicAddress, city, profilePicture } = req.body;
     try {
         const existingDoctor = await DoctorInfo.findOne({ email });
         if (existingDoctor) {
@@ -24,7 +24,10 @@ export const registerDoctorController = async (req, res) => {
             description,
             experience,
             contactNumber,
-            timings
+            timings,
+            clinicAddress,
+            city,
+            profilePicture,
         });
 
         await doctor.save();
