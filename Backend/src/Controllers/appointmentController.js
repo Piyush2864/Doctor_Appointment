@@ -173,6 +173,21 @@ export const updateAppointmentsStatusController = async(req, res)=> {
             });
         }
 
+        if(appointment.status === 'Pending' && status === 'Confirmed'){
+            appointment.status = status;
+        }
+        else if(appointment.status === 'Confirmed' && status === 'Completed'){
+            appointment.status = status;
+        }
+        else{
+            return res.status(400).json({
+                success: false,
+                message: `Invalid status transition from ${appointment.status} to ${status}.`
+            });
+        }
+
+        await appointment.save();
+
         return res.status(200).json({
             success: true,
             message: 'Appointment status updated successfully.',
