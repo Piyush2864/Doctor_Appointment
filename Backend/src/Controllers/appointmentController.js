@@ -1,10 +1,12 @@
 import AppointmentInfo from '../Models/appointmentModel.js';
 import DoctorInfo from '../Models/doctorModel.js';
 import PatientInfo from '../Models/patientModel.js';
+import generateSlots from '../Utils/generateTimeSlots.js';
 
 
 export const bookAppointmentController = async (req, res) => {
     const { doctorId, patientId, date, timeSlot, reasonForVisit } = req.body;
+    // console.log("ksbjhbvhbvsbvj", req.body)
 
     try {
         
@@ -43,7 +45,8 @@ export const bookAppointmentController = async (req, res) => {
                 const generatedSlots = generateSlots(
                     timing.startTime,
                     timing.endTime,
-                    timing.slotDuration
+                    timing.slotDuration,
+                    date
                 );
 
                 if (generatedSlots.includes(timeSlot)) {
@@ -77,8 +80,8 @@ export const bookAppointmentController = async (req, res) => {
 
         // Book the appointment
         const appointment = new AppointmentInfo({
-            doctor: doctorId,
-            patient: patientId,
+            doctorId,
+            patientId,
             date,
             timeSlot,
             reasonForVisit,
@@ -241,8 +244,10 @@ export const getAppointmentByIdController = async(req, res)=> {
 export const getAvailableSlotsController = async(req, res) => {
     try {
         const { doctorId, date } = req.body;
+        // console.log("req.bodyyy", req.body)
 
         const doctor = await DoctorInfo.findById(doctorId);
+        // console.log("second", doctor)
         if(!doctor) {
             return res.status(404).json({
                 success: false,
@@ -250,16 +255,19 @@ export const getAvailableSlotsController = async(req, res) => {
             });
         }
 
-        const bookedAppointments = await Appointment.find({
+        const bookedAppointments = await AppointmentInfo.find({
             doctorId,
             appointmentDate: date,
         });
 
         const bookSlots = bookedAppointments.map((appt)=> appt.timeSlot);
+        // console.log("third", bookSlots)
 
         const day = new Date(date).toLocaleString('en-US', { weekday: 'long'});
+        // console.log("fourth", day)
 
         const shiftsForDay = doctor.shifts.filter((shift)=> shift.day === day);
+        // console.log("shiftsFor", shiftsForDay)
 
         if(shiftsForDay.length === 0) {
             return res.status(404).json({
@@ -271,13 +279,16 @@ export const getAvailableSlotsController = async(req, res) => {
         let availableSlots = [];
         for (const shift of shiftsForDay) {
             for (const timing of shift.timings) {
+                // console.log("Timing details:", timing);
                 const slots = generateSlots(
                     timing.startTime,
                     timing.endTime,
-                    timing.slotDuration
+                    timing.slotDuration,
+                    date
                 );
-
+                // console.log("Generated slots:", slots);
                 const freeSlots =slots.filter((slot)=> !bookSlots.includes(slot));
+                console.log("Free slots:", freeSlots);
                 availableSlots = [...availableSlots, ...freeSlots];
             }
         }
@@ -288,7 +299,7 @@ export const getAvailableSlotsController = async(req, res) => {
             data: availableSlots
         });
     } catch (error) {
-        console.error('Error fetching available slots:', error);
+        // console.error('Error fetching available slots:', error);
         return res.status(500).json({
             success: false,
             message: 'Server error'
