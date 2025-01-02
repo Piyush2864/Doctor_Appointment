@@ -310,22 +310,42 @@ export const getAvailableSlotsController = async(req, res) => {
 
 export const getTopReasonController = async(req, res) => {
     try {
-        const topReasons = await AppointmentInfo.aggregate([
+        const monthlyTopReasons = await AppointmentInfo.aggregate([
+            {
+                $addFields: {
+                    month: { $month: { $toDate: "$date" } },
+                    year: { $year: { $toDate: "$date" } },
+                },
+            },
             {
                 $group: {
-                    _id: '$reasonForVisit',
+                    _id: { month: "$month", year: "$year", reason: "$reasonForVisit"},
                     count: { $sum: 1 },
-                }
+                },
             },
-
-            { $sort: { count: -1 } },
-            { $limit: 10 },
+            {
+                $sort: { "_id.year": 1, "_id.month": 1, count: -1},
+            },
+            {
+                $group: {
+                    _id: { month: "$_id.month", year: "$_id.year"},
+                    topReasons:{ $push: { reason: "$_id.reason", count: "$count"} },
+                },
+            },
+            {
+                $project: {
+                    _id: 0,
+                    month: "$_id.month",
+                    year: "$_id.year",
+                    topReasons: { $slice: ["$topReasons", 5]}
+                },
+            },
         ]);
 
         return res.status(200).json({
             success: true,
             message: 'Top reason fetched successfully.',
-            data: topReasons
+            data: monthlyTopReasons
         });
     } catch (error) {
         console.error('Error fetching top reasons:', error);
