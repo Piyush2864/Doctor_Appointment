@@ -1,6 +1,6 @@
 import express from 'express';
 import {authenticateUser, authorizeRoles} from '../Middlewares/authMiddleware.js'
-import { bookAppointmentController, cancelAppointmentController, getAppointmentByDoctorController, getAppointmentByIdController, getAppointmentByPatientController, updateAppointmentsStatusController } from '../Controllers/appointmentController.js';
+import { bookAppointmentController, cancelAppointmentController, getAppointmentByDoctorController, getAppointmentByIdController, getAppointmentByPatientController, getAvailableSlotsController, updateAppointmentsStatusController } from '../Controllers/appointmentController.js';
 
 
 const router = express.Router();
@@ -17,5 +17,7 @@ router.route('/status/:appointmentid').put(authenticateUser, authorizeRoles('Doc
 router.route('/cancel/:appointment').delete(authenticateUser, authorizeRoles('Doctor', 'Patient'), cancelAppointmentController);
 
 router.route('/get-appointment/:appointmentId').get(authenticateUser, authorizeRoles('Admin', 'Doctor', 'Patient'), getAppointmentByIdController);
+
+router.route('/available-slots').post(authenticateUser, authorizeRoles('Admin', 'Doctor', 'Patient'), getAvailableSlotsController);
 
 export default router;
