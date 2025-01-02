@@ -221,3 +221,33 @@ export const setDoctorAvailabilityContoller = async(req, res)=> {
         });
     }
 };
+
+
+export const filterDoctorsBySpecializationController= async(req, res) =>{
+    const { specialization, page = 1, limit = 10 } = req.query;
+    const skip = (page - 1) * limit;
+
+    try {
+        const doctors = await DoctorInfo.find({
+            specialization: { $regex: specialization, $options: 'i'},
+        }).skip(skip)
+        .limit(limit);
+
+        const totalDoctors = await DoctorInfo.countDocuments({
+            specialization: { $regex: specialization, $options: 'i'},
+        });
+
+        return res.status(200).json({
+            success: true,
+            data: doctors,
+            total: totalDoctors,
+            totalPage: Math.ceila(totalDoctors / limit),
+        });
+    } catch (error) {
+        console.error('Error filtering doctors by specialization :', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Server error'
+        });
+    }
+};
