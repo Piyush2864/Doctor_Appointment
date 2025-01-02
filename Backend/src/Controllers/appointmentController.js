@@ -306,3 +306,32 @@ export const getAvailableSlotsController = async(req, res) => {
         })
     };
 };
+
+
+export const getTopReasonController = async(req, res) => {
+    try {
+        const topReasons = await AppointmentInfo.aggregate([
+            {
+                $group: {
+                    _id: '$reasonForVisit',
+                    count: { $sum: 1 },
+                }
+            },
+
+            { $sort: { count: -1 } },
+            { $limit: 10 },
+        ]);
+
+        return res.status(200).json({
+            success: true,
+            message: 'Top reason fetched successfully.',
+            data: topReasons
+        });
+    } catch (error) {
+        console.error('Error fetching top reasons:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Server error'
+        });
+    }
+};
