@@ -210,3 +210,61 @@ export const getPatientMedicalHistoryController = async(req, res)=> {
         });
     }
 };
+
+
+export const addAppointmentToHistoryController = async(req, res) => {
+    const { patientId, appointmentDetails } = req.body;
+
+    try {
+        const patient = await PatientInfo.findById(patientId);
+        if(!patient) {
+            return res.status(404).json({
+                success: false,
+                messaeg: 'Patient not found.'
+            });
+        }
+
+        patient.history.push(appointmentDetails);
+
+        await patient.save();
+
+        return res.status(200).json({
+            success: true,
+            messaeg: 'Appointment Added to patientHistory',
+            data: patient
+        });
+    } catch (error) {
+        console.error('Error updating patient history.', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Server error.'
+        });
+    }
+};
+
+
+export const getPatientHistoryController = async(req, res)=> {
+    const { patientId } = req.params;
+
+    try {
+        const patient = await PatientInfo.findById(patientId);
+        if(!patient) {
+            return res.status(404).json({
+                success: false,
+                message: 'Patient not found.'
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: 'Patient history fetched successfully.',
+            data: patient
+        });
+    } catch (error) {
+        console.error('Error fetching patient history.', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Server error.'
+        });
+    }
+}
