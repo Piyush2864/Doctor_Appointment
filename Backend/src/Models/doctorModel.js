@@ -37,21 +37,29 @@ const doctorSchema = new Schema({
         required: true
     },
 
-    timings: [
+    shifts: [
         {
             day: {
                 type: String,
                 enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
                 required: true
             },
-            startTime: {
-                type: String,
-                required: true
-            },
-            endTime: {
-                type: String,
-                required: true
-            }
+            timings: [
+                {
+                    startTime: {
+                        type: String,
+                        required: true // e.g., "09:00 AM"
+                    },
+                    endTime: {
+                        type: String,
+                        required: true // e.g., "12:00 PM"
+                    },
+                    slotDuration: {
+                        type: Number, // Duration in minutes
+                        required: true // e.g., 30
+                    }
+                }
+            ]
         }
     ],
 
@@ -71,7 +79,7 @@ const doctorSchema = new Schema({
     },
 
     profilePicture: {
-        type: String,
+        type: String
     },
 
     isVerified: {
@@ -84,8 +92,7 @@ const doctorSchema = new Schema({
         enum: ['Active', 'Inactive'],
         default: 'Active'
     }
-
-}, {timestamps: true});
+}, { timestamps: true });
 
 const DoctorInfo = mongoose.model('DoctorInfo', doctorSchema);
 
