@@ -4,8 +4,10 @@ import JWT from 'jsonwebtoken';
 
 
 export const registerDoctorController = async (req, res) => {
-    const { name, email, password, specialization, description, experience, contactNumber, timings, clinicAddress, city, profilePicture } = req.body;
+    const { name, email, password, specialization, description, experience, contactNumber, shifts, clinicAddress, city, profilePicture } = req.body;
+    
     try {
+        
         const existingDoctor = await DoctorInfo.findOne({ email });
         if (existingDoctor) {
             return res.status(400).json({
@@ -14,8 +16,10 @@ export const registerDoctorController = async (req, res) => {
             });
         }
 
+       
         const hashedPassword = await bcrypt.hash(password, 10);
 
+       
         const doctor = new DoctorInfo({
             name,
             email,
@@ -24,28 +28,28 @@ export const registerDoctorController = async (req, res) => {
             description,
             experience,
             contactNumber,
-            timings,
+            shifts,  
             clinicAddress,
             city,
             profilePicture,
         });
 
+
         await doctor.save();
 
         return res.status(201).json({
             success: true,
-            message: "Doctor registered successfully!.",
+            message: "Doctor registered successfully!",
             data: doctor
         });
     } catch (error) {
-        console.error('Error registering doctor.:', error);
+        console.error('Error registering doctor:', error);
         return res.status(500).json({
             success: false,
             message: "Server error."
         });
-    };
+    }
 };
-
 
 export const loginDoctorController = async(req, res)=> {
     const { email, password } = req.body;
