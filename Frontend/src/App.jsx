@@ -9,7 +9,8 @@ import MyProfile from "./Pages/MyProfile"
 import MyAppointments from './Pages/MyAppointments'
 import Login from "./Pages/Login";
 import Appointment from './Pages/Appointment';
-import Footer from './Componets/Footer'
+import Footer from './Componets/Footer';
+// import Singup from './Pages /Singup';
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
         <Route path='/doctors' element={<Doctors/>} />
         <Route path='/doctors/:speciality' element={<Doctors/>} />
         <Route path='/login' element={<Login/>} />
+        {/* <Route path='/signup' element={<Singup/>} /> */}
         <Route path='/About' element={<About/>} />
         <Route path='/contact' element={<Contact/>} />
         <Route path='/my-profile' element={<MyProfile/>} />

@@ -6,7 +6,7 @@ import docterGroup from "../assets/Docter4image1.jpg";
 
 export default function Header() {
   return (
-    <div className=" flex flex-col md:flex-row bg-primary rounded-lg px-6 md:px-10 lg:px-20">
+    <div className=" flex flex-col md:flex-row  bg-blue-700 rounded-lg px-6 md:px-10 lg:px-20">
 
       <div className="md:w-1/2 flex flex-col justify-center gap-4 py-10 m-auto md:py-[10vw] md:mb-[-30px] text-white ">
       <p className="text-3xl md:text-4xl lg:text-5xl font-semibold leading-tight md:leading-tight"> 
@@ -22,7 +22,7 @@ export default function Header() {
       </div>
       
       <div className="md:w-1/2 relative">
-        <img className="w-full md:absolute bottom-0 h-auto roundede-lg  "     src={docterImage}    alt="" />
+        <img className="w-full md:absolute bottom-0 h-auto roundede-lg "     src={docterImage}    alt="" />
       </div>
 </div>
 
