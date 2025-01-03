@@ -223,25 +223,33 @@ export const setDoctorAvailabilityContoller = async(req, res)=> {
 };
 
 
-export const filterDoctorsBySpecializationController= async(req, res) =>{
-    const { specialization, page = 1, limit = 10 } = req.query;
+export const filterDoctorsController= async(req, res) =>{
+    const { specialization, experience, city, page = 1, limit = 10 } = req.query;
     const skip = (page - 1) * limit;
 
-    try {
-        const doctors = await DoctorInfo.find({
-            specialization: { $regex: specialization, $options: 'i'},
-        }).skip(skip)
-        .limit(limit);
+    const filter = {};
+    if(specialization) {
+        filter.specialization = { $regex: specialization, $options: 'i'};
+    }
+    if(experience){
+        filter.experience = { $gte: parseInt(experience) };
+    }
+    if(city) {
+        filter.city = { $regex: city, $options: 'i' };
+    }
 
-        const totalDoctors = await DoctorInfo.countDocuments({
-            specialization: { $regex: specialization, $options: 'i'},
-        });
+    try {
+        const doctors = await DoctorInfo.find(filter).skip(skip)
+        .limit(parseInt(limit));
+
+        const totalDoctors = await DoctorInfo.countDocuments(filter);
 
         return res.status(200).json({
             success: true,
             data: doctors,
             total: totalDoctors,
-            totalPage: Math.ceila(totalDoctors / limit),
+            page,
+            totalPage: Math.ceil(totalDoctors / limit),
         });
     } catch (error) {
         console.error('Error filtering doctors by specialization :', error);
