@@ -94,7 +94,7 @@ export const loginDoctorController = async(req, res)=> {
 
 export const getAllDoctorsController = async(req, res)=> {
     try {
-        const doctors = await DoctorInfo.diffIndexes({}, '-password');
+        const doctors = await DoctorInfo.find({}, '-password');
         if(!doctors) {
             return res.status(404).json({
                 success: false,

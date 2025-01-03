@@ -47,7 +47,9 @@ import appointmentRoute from './src/Routes/appointmentRoute.js';
 import adminRoute from './src/Routes/adminRoute.js';
 
 dotenv.config();
+
 const app = express();
+
 
 // Middleware
 app.use(cors());
