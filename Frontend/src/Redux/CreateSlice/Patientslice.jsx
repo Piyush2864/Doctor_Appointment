@@ -1,6 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit';
 
-const patientsSlice = createSlice({
+const PatientsSlice = createSlice({
     name:"patients",
     initialState:{
         patients:[]
@@ -12,4 +12,5 @@ const patientsSlice = createSlice({
     }
 })
 
-export const {setPatients} = patientsSlice.actions;
+export const {setPatients} = PatientsSlice.actions;
+export default PatientsSlice.reducer;

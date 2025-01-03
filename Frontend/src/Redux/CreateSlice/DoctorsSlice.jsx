@@ -1,9 +1,10 @@
 import {createSlice} from '@reduxjs/toolkit';
+import { doctors } from '../../assets/SpecialityData';
 
 const DoctorsSlice = createSlice({
     name: 'doctors',
     initialState: {
-        doctors: []
+        doctors: doctors,
     },
     reducers: {
         setDoctors(state, action){
@@ -13,3 +14,4 @@ const DoctorsSlice = createSlice({
 })
 
 export const {setDoctors} = DoctorsSlice.actions;
+export default DoctorsSlice.reducer;    

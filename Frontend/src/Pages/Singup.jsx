@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';  
+import { adminLogin } from '../Redux/CreateSlice/AdminSlice';
+
 
 export default function Signup() {
   const [formdata, setFormdata] = useState({
@@ -8,6 +11,8 @@ export default function Signup() {
     email: '',
     password: ''
   });
+  const dispatch = useDispatch();  
+  const navigate = useNavigate(); 
 
   const handleChange = (e) => {
     setFormdata({ ...formdata, [e.target.name]: e.target.value });
@@ -21,6 +26,8 @@ export default function Signup() {
         formdata
       );
       console.log('Signup Success:', response.data);
+      dispatch(adminLogin(response.data));
+      navigate('/dashboard');  
     } catch (error) {
       console.error('Signup Error:', error.response ? error.response.data : error.message);
     }

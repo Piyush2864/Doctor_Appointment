@@ -1,5 +1,5 @@
 import React from 'react'
-import { Routes , Route } from 'react-router-dom'
+import { Routes , Route, BrowserRouter } from 'react-router-dom'
 import Navbar from './Componets/Navbar'
 import Home from './Pages/Home'
 import About from './Pages/About'
@@ -16,6 +16,8 @@ import Signup from './Pages/singup'
 export default function App() {
   return (
     <div className='mx-4 sm:mx-[10%]'>
+      <BrowserRouter>
+    
           <Navbar/>
       <Routes>
         <Route path='/' element={<Home/>} />
@@ -33,7 +35,7 @@ export default function App() {
       </Routes>
 
       <Footer/>
-
+      </BrowserRouter>
     </div>
   )
 }
