@@ -3,7 +3,7 @@ import { getDoctorByIdController, loginDoctorController, registerDoctorControlle
 import  { authenticateUser, authorizeRoles } from '../Middlewares/authMiddleware.js';
 
 
-const router = express.Router();
+const  router = express.Router();
 
 router.route('/signup').post(registerDoctorController);
 
