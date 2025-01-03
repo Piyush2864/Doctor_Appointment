@@ -27,7 +27,7 @@ export default function Login() {
     
       dispatch(adminLogin(response.data));
     
-      navigate('/dashboard');  
+      navigate('/');  
     } catch (error) {
       console.error('Login Error:', error.response ? error.response.data : error.message);
     }

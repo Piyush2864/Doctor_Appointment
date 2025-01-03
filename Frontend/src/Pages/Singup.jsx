@@ -27,7 +27,7 @@ export default function Signup() {
       );
       console.log('Signup Success:', response.data);
       dispatch(adminLogin(response.data));
-      navigate('/dashboard');  
+      navigate('/');  
     } catch (error) {
       console.error('Signup Error:', error.response ? error.response.data : error.message);
     }

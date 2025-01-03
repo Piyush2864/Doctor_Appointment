@@ -6,7 +6,7 @@ export default function Doctors() {
   const { speciality } = useParams();
   const [filterDoc, setFilterDoc] = useState([]);
   
-  // Get doctors data from Redux
+
   const doctors = useSelector((state) => state.doctors.doctors);  
 
   const navigate = useNavigate();
@@ -25,12 +25,12 @@ export default function Doctors() {
 
   return (
     <div className="container mx-auto p-6">
-      {/* Header */}
+      
       <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
         Browse Through the Doctors' Specialties
       </h2>
 
-      {/* Specialties List */}
+
       <div className="flex flex-wrap justify-center gap-4 mb-8">
         {["General Physician", "Gynecologist", "Dermatologist", "Pediatrician", "Neurologist", "Gastroenterologist"].map((spec, index) => (
           <p key={index} className="cursor-pointer px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition">
@@ -39,7 +39,7 @@ export default function Doctors() {
         ))}
       </div>
 
-      {/* Doctors Grid */}
+    
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {filterDoc?.map((item, index) => (
           <div

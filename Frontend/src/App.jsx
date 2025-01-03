@@ -13,6 +13,7 @@ import Footer from './Componets/Footer';
 import Signup from './Pages/singup'
 
 
+
 export default function App() {
   return (
     <div className='mx-4 sm:mx-[10%]'>
@@ -23,8 +24,10 @@ export default function App() {
         <Route path='/' element={<Home/>} />
         <Route path='/doctors' element={<Doctors/>} />
         <Route path='/doctors/:speciality' element={<Doctors/>} />
+        <Route path ='/doctors/docterlogin' element={<Login/>} />
+        <Route path='/doctors/doctersingup' element={<Signup/>} />
         <Route path='/login' element={<Login/>} />
-        <Route path='/singup' element={<Signup/>} />
+        <Route path='/signup' element={<Signup/>} />
         <Route path='/About' element={<About/>} />
         <Route path='/contact' element={<Contact/>} />
         <Route path='/my-profile' element={<MyProfile/>} />
