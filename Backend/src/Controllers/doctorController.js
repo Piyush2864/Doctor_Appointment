@@ -4,7 +4,7 @@ import JWT from 'jsonwebtoken';
 
 
 export const registerDoctorController = async (req, res) => {
-    const { name, email, password, specialization, description, experience, contactNumber, shifts, clinicAddress, city, profilePicture } = req.body;
+    const { name, email, password, specialization, description, experience, contactNumber, shifts, clinicAddress, city, profilePicture, fees } = req.body;
     
     try {
         
@@ -32,6 +32,7 @@ export const registerDoctorController = async (req, res) => {
             clinicAddress,
             city,
             profilePicture,
+            fees
         });
 
 

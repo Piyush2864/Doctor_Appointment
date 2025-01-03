@@ -18,7 +18,7 @@ const doctorSchema = new Schema({
     },
 
     specialization: {
-        type: [String], // Array to allow multiple specializations
+        type: [String], 
         required: true
     },
 
@@ -91,7 +91,13 @@ const doctorSchema = new Schema({
         type: String,
         enum: ['Active', 'Inactive'],
         default: 'Active'
+    },
+
+    fees: {
+        type: String,
+        required: true
     }
+
 }, { timestamps: true });
 
 const DoctorInfo = mongoose.model('DoctorInfo', doctorSchema);
