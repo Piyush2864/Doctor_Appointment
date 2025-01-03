@@ -15,9 +15,9 @@
 // app.use(cors());
 // app.use(express.json());
 // app.use(express.urlencoded({ extended: true}));
-
+      
 // //api mounts
-// app.use('/api/v1/appointment/doctor', doctorRoute);
+// app.use('/api/v1/appointment/doctor', doctorRoute);  
 // app.use('/api/v1/appointment/patient', patientRoute);
 // app.use('/api/v1/appointment/appointment', appointmentRoute);
 // app.use('/api/v1/appointment/admin', adminRoute);
