@@ -5,7 +5,7 @@ import JWT from 'jsonwebtoken';
 
 export const registerPatientController = async(req, res)=> {
     const { name, email, password, age, gender, contactNumber } = req.body;
-
+    const profilePicture = req.file ? req.file.path : null;
     try {
         const existingPatient = await PatientInfo.findOne({ email });
         if(existingPatient){
@@ -23,7 +23,8 @@ export const registerPatientController = async(req, res)=> {
             password: hashedPassword,
             age, 
             gender,
-            contactNumber
+            contactNumber,
+            profilePicture
         });
 
         await patient.save();

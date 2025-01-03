@@ -33,6 +33,11 @@ const patientSchema = new Schema({
         type: String,
         required: true
     },
+
+    profilePicture: {
+        type: String
+    },
+    
     medicalHistory: [
         {
             type: String

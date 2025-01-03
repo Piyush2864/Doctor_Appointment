@@ -11,11 +11,12 @@ import  {
     authenticateUser, 
     authorizeRoles 
 } from '../Middlewares/authMiddleware.js'
+import { upload } from '../Middlewares/multerMiddleware.js';
 
 
 const router = express.Router();
 
-router.route('/signup').post(registerPatientController);
+router.route('/signup').post(upload, registerPatientController);
 
 router.route('/login').post(loginPatientController);
 
