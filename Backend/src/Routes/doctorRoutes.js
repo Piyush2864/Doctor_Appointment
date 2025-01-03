@@ -1,11 +1,12 @@
 import express from 'express';
 import { filterDoctorsController, getDoctorByIdController, loginDoctorController, registerDoctorController, setDoctorAvailabilityContoller, updateDoctorController } from '../Controllers/doctorController.js';
 import  { authenticateUser, authorizeRoles } from '../Middlewares/authMiddleware.js';
+import { upload } from '../Middlewares/multerMiddleware.js';
 
 
 const router = express.Router();
 
-router.route('/signup').post(registerDoctorController);
+router.route('/signup').post(upload, registerDoctorController);
 
 router.route('/login').post(loginDoctorController);
 

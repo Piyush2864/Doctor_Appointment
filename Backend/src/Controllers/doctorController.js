@@ -4,7 +4,8 @@ import JWT from 'jsonwebtoken';
 
 
 export const registerDoctorController = async (req, res) => {
-    const { name, email, password, specialization, description, experience, contactNumber, shifts, clinicAddress, city, profilePicture, fees } = req.body;
+    const { name, email, password, specialization, description, experience, contactNumber, shifts, clinicAddress, city, fees } = req.body;
+    const profilePicture = req.file ? req.file.path : null;
     
     try {
         
