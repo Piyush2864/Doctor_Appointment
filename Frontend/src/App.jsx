@@ -10,7 +10,13 @@ import MyAppointments from './Pages/MyAppointments'
 import Login from "./Pages/Login";
 import Appointment from './Pages/Appointment';
 import Footer from './Componets/Footer';
-import Signup from './Pages/singup'
+import Signup from "./Pages/Singup"
+import Patients from './Pages/Patients'
+import DoctorSingup from './Pages/DoctorSingup'
+import DoctorLogin from './Pages/DoctorLogin'
+import ProfileComponent from './Componets/ProfileComponent'
+// import PatientProfile from './Componets/PatientComponent'
+import PatientComponent from './Componets/PatientComponent'
 
 
 
@@ -24,8 +30,10 @@ export default function App() {
         <Route path='/' element={<Home/>} />
         <Route path='/doctors' element={<Doctors/>} />
         <Route path='/doctors/:speciality' element={<Doctors/>} />
-        <Route path ='/doctors/docterlogin' element={<Login/>} />
-        <Route path='/doctors/doctersingup' element={<Signup/>} />
+        <Route path ='/login' element={<Login/>} />
+        <Route path='/singup' element={<Signup/>} />
+        <Route path='/doctors/doctorsingup' element={<DoctorSingup/>} />
+        <Route path='/doctors/doctorslogin' element={<DoctorLogin/>} />
         <Route path='/login' element={<Login/>} />
         <Route path='/signup' element={<Signup/>} />
         <Route path='/About' element={<About/>} />
@@ -33,7 +41,9 @@ export default function App() {
         <Route path='/my-profile' element={<MyProfile/>} />
         <Route path='/my-appointments' element={<MyAppointments/>} />
         <Route  path='/appointment/:docid' element={<Appointment/>}/>
-        
+        <Route path='/patients/singup' element={<Patients/>} />
+        <Route path='/doctor-profile' element={<ProfileComponent/>} />
+        <Route path="/patient-profile" element={<PatientComponent/>}/>
 
       </Routes>
 

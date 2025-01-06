@@ -1,18 +1,28 @@
 import axios from "axios";
 
-export const PatientSignup = async () => {
+
+export const PatientSignup = async (formData) => {
   try {
     const response = await axios.post(
-      "http://localhost:8080/api/v1/appointment/patient/signup"
+      "http://localhost:8080/api/v1/appointment/patient/signup",
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data', 
+        },
+      }
     );
     console.log("Patient Signup Response:", response.data);
+    return response.data; 
   } catch (error) {
     console.error(
       "Error in Patient Signup API:",
       error.response ? error.response.data : error.message
     );
+    throw error; 
   }
 };
+
 
 export const PatientLogin = async () => {
   try {

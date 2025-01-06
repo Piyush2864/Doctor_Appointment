@@ -1,4 +1,4 @@
-import aios from 'axios';
+import axios from "axios"
 
 
 export const doctorSignup = async () => {
