@@ -187,30 +187,30 @@ export const deletePatientController = async(req, res)=> {
 };
 
 
-export const getPatientMedicalHistoryController = async(req, res)=> {
-    const { id } = req.params;
-    try {
-        const patient = await PatientInfo.findById(id);
-        if(!patient){
-            return res.status(404).json({
-                success: false,
-                message: 'Patient not found.'
-            });
-        }
+// export const getPatientMedicalHistoryController = async(req, res)=> {
+//     const { id } = req.params;
+//     try {
+//         const patient = await PatientInfo.findById(id);
+//         if(!patient){
+//             return res.status(404).json({
+//                 success: false,
+//                 message: 'Patient not found.'
+//             });
+//         }
 
-        return res.status(200).json({
-            success: true,
-            messaeg: 'Medical history fetched successfully.',
-            data: patient
-        })
-    } catch (error) {
-        console.error('Error fetching medical history of patient.:', error);
-        return res.status(500).json({
-            success: false,
-            message: 'Server error.'
-        });
-    }
-};
+//         return res.status(200).json({
+//             success: true,
+//             messaeg: 'Medical history fetched successfully.',
+//             data: patient
+//         })
+//     } catch (error) {
+//         console.error('Error fetching medical history of patient.:', error);
+//         return res.status(500).json({
+//             success: false,
+//             message: 'Server error.'
+//         });
+//     }
+// };
 
 
 export const addAppointmentToHistoryController = async(req, res) => {
@@ -221,27 +221,35 @@ export const addAppointmentToHistoryController = async(req, res) => {
         if(!patient) {
             return res.status(404).json({
                 success: false,
-                messaeg: 'Patient not found.'
+                message: 'Patient not found.'
             });
         }
 
-        patient.history.push(appointmentDetails);
+        // Medical History mein appointment add karna
+        patient.medicalHistory.push({
+            condition: appointmentDetails.condition, 
+            treatment: appointmentDetails.treatment, 
+            visitDate: new Date(), 
+            reasonForVisit: appointmentDetails.reasonForVisit
+        });
 
         await patient.save();
 
         return res.status(200).json({
             success: true,
-            messaeg: 'Appointment Added to patientHistory',
+            message: 'Appointment added to medical history.',
             data: patient
         });
     } catch (error) {
-        console.error('Error updating patient history.', error);
+        console.error('Error updating patient medical history.', error);
         return res.status(500).json({
             success: false,
             message: 'Server error.'
         });
     }
 };
+
+
 
 
 export const getPatientHistoryController = async(req, res)=> {
@@ -269,3 +277,107 @@ export const getPatientHistoryController = async(req, res)=> {
         });
     }
 }
+
+
+export const addVideoCallToHistoryController = async (req, res) => {
+    const { patientId, doctorId, appointmentId, date, platform, roomId } = req.body;
+
+    try {
+        const patient = await PatientInfo.findById(patientId);
+        if(!patient){
+            return res.status(404).json({
+                success: false,
+                message: 'Patient not found.'
+            });
+        }
+
+        // Video call ko history mein add karna
+        patient.videoCallHistory.push({
+            doctorId,
+            appointmentId,
+            date,
+            platform,  // Example: "Zoom", "WebRTC", etc.
+            roomId      // Unique roomId for the call
+        });
+
+        // Medical history mein bhi update karna
+        patient.medicalHistory.push({
+            condition: 'Follow-up Consultation via Video Call',
+            treatment: 'Virtual Consultation',
+            visitDate: date,
+            reasonForVisit: 'Follow-up Video Consultation'
+        });
+
+        await patient.save();
+
+        return res.status(200).json({
+            success: true,
+            message: 'Video call added to history.',
+            data: patient
+        });
+    } catch (error) {
+        console.error('Error adding video call to history:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Server error.'
+        });
+    }
+};
+
+
+
+
+export const getPatientVideoCallHistoryController = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const patient = await PatientInfo.findById(id);
+        if(!patient){
+            return res.status(404).json({
+                success: false,
+                message: 'Patient not found.'
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: 'Video call history fetched successfully.',
+            data: patient.videoCallHistory
+        });
+    } catch (error) {
+        console.error('Error fetching video call history:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Server error.'
+        });
+    }
+};
+
+
+// Controller to get the medical history of a patient by ID
+export const getPatientMedicalHistoryController = async (req, res) => {
+    const { patientId } = req.params;
+
+    try {
+        // Find the patient by ID and select only the medicalHistory field
+        const patient = await PatientInfo.findById(patientId, 'medicalHistory');
+        if (!patient) {
+            return res.status(404).json({
+                success: false,
+                message: 'Patient not found.',
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: 'Medical history fetched successfully.',
+            data: patient.medicalHistory,
+        });
+    } catch (error) {
+        console.error('Error fetching medical history of patient:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Server error.',
+        });
+    }
+};

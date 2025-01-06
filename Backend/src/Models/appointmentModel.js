@@ -34,6 +34,17 @@ const appointmentSchema = new Schema({
         type: String
     },
 
+    consultationMode: {
+        type: String,
+        enum: ['Video', 'In-person'],
+        default: 'In-person'
+    },
+
+    videoCallDetails: {
+        platform: { type: String, default: 'WebRTC' },
+        roomId: { type: String }
+    }
+
 }, {timestamps: true}
 )
 

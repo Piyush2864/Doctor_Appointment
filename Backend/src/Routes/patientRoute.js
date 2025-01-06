@@ -1,8 +1,11 @@
 import express from 'express';
 import { 
     addAppointmentToHistoryController,
+    addVideoCallToHistoryController,
     getPatientByIdController, 
     getPatientHistoryController, 
+    getPatientMedicalHistoryController, 
+    getPatientVideoCallHistoryController, 
     loginPatientController, 
     registerPatientController, 
     updatePatientController 
@@ -24,8 +27,14 @@ router.route('/get-patient/:id').get(authenticateUser, authorizeRoles('Admin', '
 
 router.route('/update-patient/:id').put(authenticateUser, authorizeRoles('Patient'), updatePatientController);
 
-router.route('/history').post(authenticateUser, authorizeRoles('Admin', 'Patient'), addAppointmentToHistoryController);
+router.route('/appointment-history').post(authenticateUser, authorizeRoles('Admin', 'Patient'), addAppointmentToHistoryController);
+
+router.route('/medical-history/:patientId').get(authenticateUser, authorizeRoles('Admin', 'Patient', 'Doctor'), getPatientMedicalHistoryController)
 
 router.route('/patient-history/:patientId').get(authenticateUser, authorizeRoles('Admin', 'Patient'), getPatientHistoryController);
+
+router.route('/video-call-history').post(authenticateUser, authorizeRoles('Admin', 'Doctor', 'Patient'), addVideoCallToHistoryController);
+
+router.route('/video-call-history/:id').get(authenticateUser, authorizeRoles('Admin', 'Doctor', 'Patient'), getPatientVideoCallHistoryController);
 
 export default router;

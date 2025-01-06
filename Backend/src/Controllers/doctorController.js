@@ -4,11 +4,10 @@ import JWT from 'jsonwebtoken';
 
 
 export const registerDoctorController = async (req, res) => {
-    const { name, email, password, specialization, description, experience, contactNumber, shifts, clinicAddress, city, fees } = req.body;
+    const { name, email, password, specialization, description, experience, contactNumber, shifts, clinicAddress, city, fees, videoConsultationTimings, maxVideoConsultationsPerDay, emergencyAvailability } = req.body;
     const profilePicture = req.file ? req.file.path : null;
-    
+
     try {
-        
         const existingDoctor = await DoctorInfo.findOne({ email });
         if (existingDoctor) {
             return res.status(400).json({
@@ -17,10 +16,8 @@ export const registerDoctorController = async (req, res) => {
             });
         }
 
-       
         const hashedPassword = await bcrypt.hash(password, 10);
 
-       
         const doctor = new DoctorInfo({
             name,
             email,
@@ -29,13 +26,15 @@ export const registerDoctorController = async (req, res) => {
             description,
             experience,
             contactNumber,
-            shifts,  
+            shifts,
             clinicAddress,
             city,
             profilePicture,
-            fees
+            fees,
+            videoConsultationTimings,
+            maxVideoConsultationsPerDay,
+            emergencyAvailability
         });
-
 
         await doctor.save();
 
@@ -52,6 +51,7 @@ export const registerDoctorController = async (req, res) => {
         });
     }
 };
+
 
 export const loginDoctorController = async(req, res)=> {
     const { email, password } = req.body;
@@ -92,29 +92,35 @@ export const loginDoctorController = async(req, res)=> {
 };
 
 
-export const getAllDoctorsController = async(req, res)=> {
+export const getAllDoctorsController = async (req, res) => {
+    const { page = 1, limit = 10, sortBy = 'ratings', order = 'desc' } = req.query;
+
     try {
-        const doctors = await DoctorInfo.find({}, '-password');
-        if(!doctors) {
-            return res.status(404).json({
-                success: false,
-                message: "Doctor not found."
-            });
-        }
+        const doctors = await DoctorInfo.find({}, '-password')
+            .sort({ [sortBy]: order === 'asc' ? 1 : -1 })
+            .skip((page - 1) * limit)
+            .limit(parseInt(limit));
+
+        const totalDoctors = await DoctorInfo.countDocuments();
 
         return res.status(200).json({
             success: true,
             message: "Doctors fetched successfully.",
-            data: doctors
+            data: doctors,
+            total: totalDoctors,
+            page,
+            totalPages: Math.ceil(totalDoctors / limit)
         });
     } catch (error) {
-        console.error('Error fetching doctors.:', error);
+        console.error('Error fetching doctors:', error);
         return res.status(500).json({
             success: false,
             message: "Server error."
         });
     }
 };
+
+
 
 
 export const getDoctorByIdController = async(req, res)=> {
@@ -143,13 +149,13 @@ export const getDoctorByIdController = async(req, res)=> {
 };
 
 
-export const updateDoctorController = async(req, res)=> {
+export const updateDoctorController = async (req, res) => {
     const { id } = req.params;
     const updates = req.body;
 
     try {
-        const doctor = await DoctorInfo.findByIdAndUpdate(id, updates, { new: true, runValidators: true});
-        if(!doctor){
+        const doctor = await DoctorInfo.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
+        if (!doctor) {
             return res.status(404).json({
                 success: false,
                 message: 'Doctor not found.'
@@ -162,13 +168,14 @@ export const updateDoctorController = async(req, res)=> {
             data: doctor
         });
     } catch (error) {
-        console.error('Error updating doctor profile.:', error);
+        console.error('Error updating doctor profile:', error);
         return res.status(500).json({
             success: false,
             message: "Server error."
         });
     }
 };
+
 
 
 export const deleteDoctorController = async(req, res)=> {
@@ -225,25 +232,29 @@ export const setDoctorAvailabilityContoller = async(req, res)=> {
 };
 
 
-export const filterDoctorsController= async(req, res) =>{
-    const { specialization, experience, city, page = 1, limit = 10 } = req.query;
+export const filterDoctorsController = async (req, res) => {
+    const { specialization, experience, city, emergencyAvailability, minRating, page = 1, limit = 10 } = req.query;
     const skip = (page - 1) * limit;
 
     const filter = {};
-    if(specialization) {
-        filter.specialization = { $regex: specialization, $options: 'i'};
+    if (specialization) {
+        filter.specialization = { $regex: specialization, $options: 'i' };
     }
-    if(experience){
+    if (experience) {
         filter.experience = { $gte: parseInt(experience) };
     }
-    if(city) {
+    if (city) {
         filter.city = { $regex: city, $options: 'i' };
+    }
+    if (emergencyAvailability) {
+        filter.emergencyAvailability = emergencyAvailability === 'true';
+    }
+    if (minRating) {
+        filter.ratings = { $gte: parseFloat(minRating) };
     }
 
     try {
-        const doctors = await DoctorInfo.find(filter).skip(skip)
-        .limit(parseInt(limit));
-
+        const doctors = await DoctorInfo.find(filter).skip(skip).limit(parseInt(limit));
         const totalDoctors = await DoctorInfo.countDocuments(filter);
 
         return res.status(200).json({
@@ -254,10 +265,51 @@ export const filterDoctorsController= async(req, res) =>{
             totalPage: Math.ceil(totalDoctors / limit),
         });
     } catch (error) {
-        console.error('Error filtering doctors by specialization :', error);
+        console.error('Error filtering doctors:', error);
         return res.status(500).json({
             success: false,
-            message: 'Server error'
+            message: 'Server error.'
+        });
+    }
+};
+
+
+export const addDoctorReviewController = async (req, res) => {
+    const { doctorId } = req.params;
+    const { patientId, review, rating } = req.body;
+
+    try {
+        const doctor = await DoctorInfo.findById(doctorId);
+        if (!doctor) {
+            return res.status(404).json({
+                success: false,
+                message: "Doctor not found."
+            });
+        }
+
+        const existingReviewIndex = doctor.reviews.findIndex(r => r.patientId.toString() === patientId);
+        if (existingReviewIndex !== -1) {
+            // Update existing review
+            doctor.reviews[existingReviewIndex] = { patientId, review, rating };
+        } else {
+            // Add new review
+            doctor.reviews.push({ patientId, review, rating });
+        }
+
+        doctor.ratings = doctor.reviews.reduce((sum, r) => sum + r.rating, 0) / doctor.reviews.length;
+
+        await doctor.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Review added/updated successfully.",
+            data: doctor
+        });
+    } catch (error) {
+        console.error('Error managing reviews:', error);
+        return res.status(500).json({
+            success: false,
+            message: "Server error."
         });
     }
 };
