@@ -165,7 +165,7 @@ export const updateAppointmentsStatusController = async(req, res)=> {
     const { status } = req.body;
 
     try {
-        const appointment = await AppointmentInfo.findByIdAndUpdate(appointmentId, {status}, {new: true});
+        const appointment = await AppointmentInfo.findById(appointmentId);
         if(!appointment){
             return res.status(404).json({
                 success: false,
@@ -173,11 +173,26 @@ export const updateAppointmentsStatusController = async(req, res)=> {
             });
         }
 
+        // Check the current and new status transition
         if(appointment.status === 'Pending' && status === 'Confirmed'){
             appointment.status = status;
         }
         else if(appointment.status === 'Confirmed' && status === 'Completed'){
             appointment.status = status;
+
+            // Update patient medical history after appointment completion
+            const patient = await PatientInfo.findById(appointment.patientId);
+            if (patient) {
+                patient.medicalHistory.push({
+                    condition: 'Follow-up after consultation', // You can customize this based on your app logic
+                    treatment: 'Treatment based on consultation',
+                    visitDate: new Date(),
+                    reasonForVisit: appointment.reasonForVisit
+                });
+
+                // Save the updated patient data
+                await patient.save();
+            }
         }
         else{
             return res.status(400).json({
@@ -194,13 +209,14 @@ export const updateAppointmentsStatusController = async(req, res)=> {
             data: appointment
         });
     } catch (error) {
-        console.error('Error updating status appointment.:', error);
+        console.error('Error updating status appointment:', error);
         return res.status(500).json({
             success: false,
             message: 'Server error.'
         });
     }
 };
+
 
 
 export const cancelAppointmentController = async(req, res)=> {
@@ -367,6 +383,52 @@ export const getTopReasonController = async(req, res) => {
         return res.status(500).json({
             success: false,
             message: 'Server error'
+        });
+    }
+};
+
+
+export const addVideoCallToHistoryController = async (req, res) => {
+    const { patientId, doctorId, appointmentId, date, platform, roomId } = req.body;
+
+    try {
+        const patient = await PatientInfo.findById(patientId);
+        if(!patient){
+            return res.status(404).json({
+                success: false,
+                message: 'Patient not found.'
+            });
+        }
+
+        // Add the video call details to videoCallHistory
+        patient.videoCallHistory.push({
+            doctorId,
+            appointmentId,
+            date,
+            platform,  // Example: "Zoom", "WebRTC", etc.
+            roomId      // Unique roomId for the call
+        });
+
+        // Optionally, you can also update medical history after video consultation
+        patient.medicalHistory.push({
+            condition: 'Follow-up Consultation via Video Call',
+            treatment: 'Virtual Consultation',
+            visitDate: date,
+            reasonForVisit: 'Follow-up Video Consultation'
+        });
+
+        await patient.save();
+
+        return res.status(200).json({
+            success: true,
+            message: 'Video call added to history.',
+            data: patient
+        });
+    } catch (error) {
+        console.error('Error adding video call to history:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Server error.'
         });
     }
 };
