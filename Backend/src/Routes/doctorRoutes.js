@@ -1,5 +1,5 @@
 import express from 'express';
-import { filterDoctorsController, getDoctorByIdController, loginDoctorController, registerDoctorController, setDoctorAvailabilityContoller, updateDoctorController } from '../Controllers/doctorController.js';
+import { addDoctorReviewController, filterDoctorsController, getDoctorByIdController, loginDoctorController, registerDoctorController, setDoctorAvailabilityContoller, updateDoctorController } from '../Controllers/doctorController.js';
 import  { authenticateUser, authorizeRoles } from '../Middlewares/authMiddleware.js';
 import { upload } from '../Middlewares/multerMiddleware.js';
 
@@ -17,5 +17,7 @@ router.route('/update-doctor/:id').put(authenticateUser, authorizeRoles('Doctor'
 router.route('/availability/:id').put(authenticateUser, authorizeRoles('Doctor'), setDoctorAvailabilityContoller);
 
 router.route('/filter').get(authenticateUser, authorizeRoles('Doctor'), filterDoctorsController);
+
+router.route('/review/:doctorId').post(authenticateUser, authorizeRoles('Patient'), addDoctorReviewController);
 
 export default router;
