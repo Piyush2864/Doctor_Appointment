@@ -70,6 +70,7 @@ export const loginPatientController = async(req, res)=> {
             success: true,
             message: 'Login successfully.',
             token,
+            role,
             data: patient
         });
     } catch (error) {

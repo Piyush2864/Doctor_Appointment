@@ -80,6 +80,7 @@ export const loginDoctorController = async(req, res)=> {
             success: true,
             message: "Login successfully.",
             token,
+            // role,
             data: doctor
         });
     } catch (error) {

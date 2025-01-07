@@ -66,6 +66,7 @@ export const loginAdminController = async(req, res)=> {
             success: false,
             message: 'Login successfull.',
             token,
+            // role,
             data: admin
         });
     } catch (error) {
