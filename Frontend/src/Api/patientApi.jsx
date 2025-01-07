@@ -1,21 +1,35 @@
 import axios from "axios";
 import jwtDecode from 'jwt-decode'
 
-export const PatientSignup = async () => {
+
+export const PatientSignup = async (formData) => {
   try {
     const response = await axios.post(
-      "http://localhost:8080/api/v1/appointment/patient/signup"
+      "http://localhost:8080/api/v1/appointment/patient/signup",
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data', 
+        },
+      }
     );
     console.log("Patient Signup Response:", response.data);
+    return response.data; 
   } catch (error) {
     console.error(
       "Error in Patient Signup API:",
       error.response ? error.response.data : error.message
     );
+    throw error; 
   }
 };
 
+<<<<<<< HEAD
 export const PatientLogin = async (email, password) => {
+=======
+
+export const PatientLogin = async () => {
+>>>>>>> 45a87fcdd1a27df39e1efcbda1b8ad31f0a53c52
   try {
     const response = await axios.post(
       "http://localhost:8080/api/v1/appointment/patient/login",

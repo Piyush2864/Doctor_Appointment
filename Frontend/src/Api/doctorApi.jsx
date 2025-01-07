@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 import axios from 'axios';
 import jwtDecode from 'jwt-decode'
+=======
+import axios from "axios"
+>>>>>>> 45a87fcdd1a27df39e1efcbda1b8ad31f0a53c52
 
 
 export const doctorSignup = async () => {

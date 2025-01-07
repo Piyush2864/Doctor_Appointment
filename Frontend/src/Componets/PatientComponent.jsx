@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import useParams from 'react-router'
+import { useParams } from "react-router-dom";
 
-const PatientProfile = () => {
-  const {patientId} = useParams() ; // Replace with dynamic patient ID
+const PatientComponent = () => {
+  const { patientId } = useParams(); 
   const [patientData, setPatientData] = useState(null);
   const [formData, setFormData] = useState({});
   const [isEditing, setIsEditing] = useState(false);
@@ -11,7 +11,15 @@ const PatientProfile = () => {
   useEffect(() => {
     const fetchPatientData = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/v1/appointment/patient/get-patient/${patientId}`);
+        const token = localStorage.getItem("token");
+        const response = await fetch(
+          `http://localhost:8080/api/v1/appointment/patient/get-patient/${patientId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, // Set Bearer Token
+            },
+          }
+        );
         const data = await response.json();
         if (data.success) {
           setPatientData(data.data);
@@ -44,11 +52,18 @@ const PatientProfile = () => {
   // Update Patient Data
   const handleUpdate = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/v1/appointment/patient/update-patient/${patientId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `http://localhost:8080/api/v1/appointment/patient/update-patient/${patientId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(formData),
+        }
+      );
       const data = await response.json();
       if (data.success) {
         alert("Profile updated successfully!");
@@ -144,28 +159,41 @@ const PatientProfile = () => {
               <input
                 type="text"
                 value={entry?.condition || ""}
-                onChange={(e) => handleInputChange(e, "medicalHistory", index, "condition")}
+                onChange={(e) =>
+                  handleInputChange(e, "medicalHistory", index, "condition")
+                }
                 style={{ marginLeft: "10px", padding: "5px" }}
               />
               <label>Treatment:</label>
               <input
                 type="text"
                 value={entry?.treatment || ""}
-                onChange={(e) => handleInputChange(e, "medicalHistory", index, "treatment")}
+                onChange={(e) =>
+                  handleInputChange(e, "medicalHistory", index, "treatment")
+                }
                 style={{ marginLeft: "10px", padding: "5px" }}
               />
               <label>Visit Date:</label>
               <input
                 type="date"
                 value={entry?.visitDate || ""}
-                onChange={(e) => handleInputChange(e, "medicalHistory", index, "visitDate")}
+                onChange={(e) =>
+                  handleInputChange(e, "medicalHistory", index, "visitDate")
+                }
                 style={{ marginLeft: "10px", padding: "5px" }}
               />
               <label>Reason:</label>
               <input
                 type="text"
                 value={entry?.reasonForVisit || ""}
-                onChange={(e) => handleInputChange(e, "medicalHistory", index, "reasonForVisit")}
+                onChange={(e) =>
+                  handleInputChange(
+                    e,
+                    "medicalHistory",
+                    index,
+                    "reasonForVisit"
+                  )
+                }
                 style={{ marginLeft: "10px", padding: "5px" }}
               />
             </div>
@@ -179,13 +207,20 @@ const PatientProfile = () => {
               name="videoCallNotifications"
               checked={formData?.videoCallNotifications}
               onChange={(e) =>
-                setFormData({ ...formData, videoCallNotifications: e.target.checked })
+                setFormData({
+                  ...formData,
+                  videoCallNotifications: e.target.checked,
+                })
               }
             />
           </div>
 
           {/* Buttons */}
-          <button type="button" onClick={handleUpdate} style={{ marginRight: "10px" }}>
+          <button
+            type="button"
+            onClick={handleUpdate}
+            style={{ marginRight: "10px" }}
+          >
             Save
           </button>
           <button type="button" onClick={() => setIsEditing(false)}>
@@ -217,7 +252,9 @@ const PatientProfile = () => {
             <div key={index}>
               <p>Condition: {entry?.condition}</p>
               <p>Treatment: {entry?.treatment}</p>
-              <p>Visit Date: {new Date(entry?.visitDate).toLocaleDateString()}</p>
+              <p>
+                Visit Date: {new Date(entry?.visitDate).toLocaleDateString()}
+              </p>
               <p>Reason: {entry?.reasonForVisit}</p>
             </div>
           ))}
@@ -228,4 +265,4 @@ const PatientProfile = () => {
   );
 };
 
-export default PatientProfile;
+export default PatientComponent;
