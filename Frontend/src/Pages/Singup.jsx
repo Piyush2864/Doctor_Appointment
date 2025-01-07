@@ -23,7 +23,7 @@ export default function Signup() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/v1/appointment/${role}/signup`, // Role-based API call
+        `http://localhost:8080/api/v1/appointment/${role}/signup`, 
         formdata
       );
       console.log('Signup Success:', response.data);

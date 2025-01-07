@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
@@ -10,30 +11,20 @@ const PatientComponent = () => {
   // Fetch Patient Data
   useEffect(() => {
     const fetchPatientData = async () => {
+      if (!patientId) {
+        // console.error("patientId is undefined!");
+        return;
+      }
+    
       try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(
-          `http://localhost:8080/api/v1/appointment/patient/get-patient/${patientId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`, // Set Bearer Token
-            },
-          }
-        );
-        const data = await response.json();
-        if (data.success) {
-          setPatientData(data.data);
-          setFormData(data.data);
-        } else {
-          alert(data.message);
-        }
+        const response = await axios.get(`http://localhost:8080/api/v1/appointment/patient/get-patient/${patientId}`);
+        setPatientData(response.data);
       } catch (error) {
         console.error("Error fetching patient data:", error);
       }
     };
-    fetchPatientData();
-  }, [patientId]);
-
+    fetchPatientData()
+  } , )
   // Handle Input Change
   const handleInputChange = (e, parentKey, index, nestedKey) => {
     if (parentKey) {

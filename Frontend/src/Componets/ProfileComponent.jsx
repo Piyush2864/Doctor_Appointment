@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
-const ProfileComponent = ({ doctorData, onUpdate }) => {
+
+const ProfileComponent = ({ doctorData }) => {
   const [formData, setFormData] = useState({
     name: doctorData?.name || '',
     email: doctorData?.email || '',
@@ -104,7 +105,7 @@ const ProfileComponent = ({ doctorData, onUpdate }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onUpdate(formData);
+    formData;
   };
 
   return (

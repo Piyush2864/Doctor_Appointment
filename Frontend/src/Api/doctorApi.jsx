@@ -8,7 +8,7 @@ export const doctorSignup = async () => {
         );
         console.log("Doctor Signup Response:", response.data);
     } catch (error) {
-        console.error("Error during Doctor Signup:", error.response?.data || error.message);
+        console.log("Error during Doctor Signup:", error.response?.data || error.message);
     }
 };
 
@@ -20,7 +20,7 @@ export const doctorLogin = async () => {
         );
         console.log("Doctor Login Response:", response.data);
     } catch (error) {
-        console.error("Error during Doctor Login:", error.response?.data || error.message);
+        console.log("Error during Doctor Login:", error.response?.data || error.message);
     }
 };
 
@@ -32,7 +32,7 @@ export const getDoctor = async () => {
         );
         console.log("Doctor Details:", response.data);
     } catch (error) {
-        console.error("Error fetching Doctor Details:", error.response?.data || error.message);
+        console.log("Error fetching Doctor Details:", error.response?.data || error.message);
     }
 };
 
@@ -44,6 +44,6 @@ export const updateDoctor = async () => {
         );
         console.log("Doctor Update Response:", response.data);
     } catch (error) {
-        console.error("Error updating Doctor Details:", error.response?.data || error.message);
+        console.log("Error updating Doctor Details:", error.response?.data || error.message);
     }
 };

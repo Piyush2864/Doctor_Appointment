@@ -17,6 +17,7 @@ import DoctorLogin from './Pages/DoctorLogin'
 import ProfileComponent from './Componets/ProfileComponent'
 // import PatientProfile from './Componets/PatientComponent'
 import PatientComponent from './Componets/PatientComponent'
+import DoctorDashboard from './Componets/DoctersDashbord'
 
 
 
@@ -34,6 +35,7 @@ export default function App() {
         <Route path='/singup' element={<Signup/>} />
         <Route path='/doctors/doctorsingup' element={<DoctorSingup/>} />
         <Route path='/doctors/doctorslogin' element={<DoctorLogin/>} />
+        <Route path='/dashboard' element={<DoctorDashboard/>} />
         <Route path='/login' element={<Login/>} />
         <Route path='/signup' element={<Signup/>} />
         <Route path='/About' element={<About/>} />

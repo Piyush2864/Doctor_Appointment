@@ -15,7 +15,7 @@ export const PatientSignup = async (formData) => {
     console.log("Patient Signup Response:", response.data);
     return response.data; 
   } catch (error) {
-    console.error(
+    console.log(
       "Error in Patient Signup API:",
       error.response ? error.response.data : error.message
     );
@@ -46,7 +46,7 @@ export const GetPatient = async () => {
     );
     console.log("Get Patient Response:", response.data);
   } catch (error) {
-    console.error(
+    console.log(
       "Error in Get Patient API:",
       error.response ? error.response.data : error.message
     );
@@ -61,7 +61,7 @@ export const UpdatePatient = async () => {
     );
     console.log("Update Patient Response:", response.data);
   } catch (error) {
-    console.error(
+    console.log(
       "Error in Update Patient API:",
       error.response ? error.response.data : error.message
     );
@@ -76,7 +76,7 @@ export const PatientHistory = async () => {
     );
     console.log("Patient History Response:", response.data);
   } catch (error) {
-    console.error(
+    console.log(
       "Error in Patient History API:",
       error.response ? error.response.data : error.message
     );
