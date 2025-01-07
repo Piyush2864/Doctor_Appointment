@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { doctorSignup } from "../Api/doctorApi"
+import { doctorSignup } from "../Api/doctorApi";
 
 export default function DoctorSignup() {
-  const [formData, setFormData] = useState({
-    fullName: "",
+  const [doctorData, setDoctorData] = useState({
+    name: "",  // ✅ Changed `fullName` to `name`
     email: "",
     password: "",
     confirmPassword: "",
@@ -18,33 +18,30 @@ export default function DoctorSignup() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    setDoctorData({ ...doctorData, [name]: value });
   };
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.fullName) newErrors.fullName = "Full name is required";
-    if (!formData.email) {
+    if (!doctorData.name) newErrors.name = "Full name is required";  // ✅ Changed validation
+    if (!doctorData.email) {
       newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    } else if (!/\S+@\S+\.\S+/.test(doctorData.email)) {
       newErrors.email = "Invalid email format";
     }
-    if (!formData.password) {
+    if (!doctorData.password) {
       newErrors.password = "Password is required";
-    } else if (formData.password.length < 6) {
+    } else if (doctorData.password.length < 6) {
       newErrors.password = "Password must be at least 6 characters";
     }
-    if (!formData.confirmPassword) {
+    if (!doctorData.confirmPassword) {
       newErrors.confirmPassword = "Please confirm your password";
-    } else if (formData.password !== formData.confirmPassword) {
+    } else if (doctorData.password !== doctorData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
     }
-    if (!formData.contactNumber) {
+    if (!doctorData.contactNumber) {
       newErrors.contactNumber = "Contact number is required";
-    } else if (!/^\d{10}$/.test(formData.contactNumber)) {
+    } else if (!/^\d{10}$/.test(doctorData.contactNumber)) {
       newErrors.contactNumber = "Enter a valid 10-digit phone number";
     }
     return newErrors;
@@ -64,11 +61,9 @@ export default function DoctorSignup() {
     }
 
     try {
-      const response = await doctorSignup(formData);
+      await doctorSignup(doctorData);
       setSuccessMessage("Signup successful! Redirecting to login...");
-      setTimeout(() => {
-        navigate("/doctors/doctorslogin"); // Redirect after success
-      }, 2000);
+      setTimeout(() => navigate("/doctors/doctorslogin"), 2000); // ✅ Redirect to login page
     } catch (errorMessage) {
       setErrors({ apiError: errorMessage });
     } finally {
@@ -90,12 +85,12 @@ export default function DoctorSignup() {
             <label className="block text-sm font-medium">Full Name</label>
             <input
               type="text"
-              name="fullName"
-              value={formData.fullName}
+              name="name"
+              value={doctorData.name}
               onChange={handleChange}
               className="mt-1 block w-full border border-gray-300 rounded-md p-2"
             />
-            {errors.fullName && <p className="text-red-500 text-sm">{errors.fullName}</p>}
+            {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
           </div>
 
           {/* Email */}
@@ -104,7 +99,7 @@ export default function DoctorSignup() {
             <input
               type="email"
               name="email"
-              value={formData.email}
+              value={doctorData.email}
               onChange={handleChange}
               className="mt-1 block w-full border border-gray-300 rounded-md p-2"
             />
@@ -117,7 +112,7 @@ export default function DoctorSignup() {
             <input
               type="password"
               name="password"
-              value={formData.password}
+              value={doctorData.password}
               onChange={handleChange}
               className="mt-1 block w-full border border-gray-300 rounded-md p-2"
             />
@@ -130,7 +125,7 @@ export default function DoctorSignup() {
             <input
               type="password"
               name="confirmPassword"
-              value={formData.confirmPassword}
+              value={doctorData.confirmPassword}
               onChange={handleChange}
               className="mt-1 block w-full border border-gray-300 rounded-md p-2"
             />
@@ -143,7 +138,7 @@ export default function DoctorSignup() {
             <input
               type="text"
               name="contactNumber"
-              value={formData.contactNumber}
+              value={doctorData.contactNumber}
               onChange={handleChange}
               className="mt-1 block w-full border border-gray-300 rounded-md p-2"
             />
@@ -162,7 +157,7 @@ export default function DoctorSignup() {
 
         {/* Login Link */}
         <p className="mt-4 text-sm text-center">
-          Already have an account? <Link to="/doctors/doctorslogin" className="text-blue-500">Log in</Link>
+          Already have an account? <Link to="/doctors/doctorslogin" className="text-blue-500">Login</Link>
         </p>
       </div>
     </div>

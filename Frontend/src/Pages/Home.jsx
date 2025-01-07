@@ -3,6 +3,7 @@ import Header from '../Componets/Header'
 import SpecialityMenu from '../Componets/SpecialityMenu'
 import TopDocters from '../Componets/TopDocters'
 import Banar from '../Componets/Banar'
+import DoctorDashboard from '../Componets/DoctersDashbord'
 
 export default function Home() {
   return (
@@ -11,6 +12,7 @@ export default function Home() {
       <SpecialityMenu/>
       <TopDocters/>
       <Banar/>
+      <DoctorDashboard/>
       
     </div>
   )

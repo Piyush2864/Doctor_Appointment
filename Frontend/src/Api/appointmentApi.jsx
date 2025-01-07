@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
 export const BookAppointment = async () => {
   try {
@@ -15,7 +16,7 @@ export const BookAppointment = async () => {
 };
 
 export const GetAppointmentsByDoctor = async () => {
-  const doctorId = "your-doctor-id"; // Replace with actual doctor ID
+  const {doctorId} = useParams(); // Replace with actual doctor ID
   try {
     const response = await axios.get(
       `http://localhost:8080/api/v1/appointment/appointment/doctor/${doctorId}`

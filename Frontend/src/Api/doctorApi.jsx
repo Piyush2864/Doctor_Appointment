@@ -1,10 +1,17 @@
-import aios from 'axios';
+import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 
 
-export const doctorSignup = async () => {
+export const doctorSignup = async (doctorData) => {
     try {
         const response = await axios.post(
-            "http://localhost:8080/api/v1/appointment/doctor/signup"
+            "http://localhost:8080/api/v1/appointment/doctor/signup",
+            doctorData, 
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
         );
         console.log("Doctor Signup Response:", response.data);
     } catch (error) {
@@ -20,7 +27,7 @@ export const doctorLogin = async (email, password) => {
             { email, password } 
         );
 
-        console.log("Doctor Login Response:", response.data);
+        // console.log("Doctor Login Response:", response.data);
 
         const { token } = response.data;
 
@@ -29,7 +36,7 @@ export const doctorLogin = async (email, password) => {
         const decodedToken = jwtDecode(token);
         const role = decodedToken.role;
 
-        console.log("User Role:", role);
+        // console.log("User Role:", role);
 
         return { ...response.data, role };
     } catch (error) {

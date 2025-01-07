@@ -33,7 +33,7 @@ export default function DoctorLogin() {
         } else {
           sessionStorage.setItem("doctorToken", data.token);
         }
-        navigate("/dashboard");
+        navigate("/docter-dashbord");
       } else {
         setError("Invalid email or password.");
       }
