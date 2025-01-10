@@ -11,7 +11,7 @@ export const PatientSignup = async (formData) => {
         headers: {
           'Content-Type': 'multipart/form-data', 
         },
-      }
+      }            
     );
     console.log("Patient Signup Response:", response.data);
     return response.data; 
@@ -64,17 +64,11 @@ const getPatientIdFromToken = () => {
   }
   return null; // In case no token is found
 };
-
+getPatientIdFromToken();
 
 export const GetPatient = async (patientId) => {
   try {
-    // const patientId = getPatientIdFromToken();
     const token = localStorage.getItem("token"); 
-
-    // if (!patientId) {
-    //   console.error("Patient not logged in or token missing.");
-    //   return;
-    // }
 
     if (!token) {
       throw new Error("Unauthorized: Token not found.");
@@ -84,7 +78,6 @@ export const GetPatient = async (patientId) => {
     const role = decodedToken.role; 
     console.log("User Role for GetPatient API:", role);
 
-    
     if (role !== "Patient") {
       throw new Error("Unauthorized: Role not permitted.");
     }
@@ -93,7 +86,7 @@ export const GetPatient = async (patientId) => {
       `http://localhost:8080/api/v1/appointment/patient/get-patient/${patientId}`,
       {
         headers: {
-          Authorization: `Bearer ${token}`, 
+          Authorization: `Bearer ${token}`,
         },
       }
     );

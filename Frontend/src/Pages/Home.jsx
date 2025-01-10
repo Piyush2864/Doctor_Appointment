@@ -12,8 +12,6 @@ export default function Home() {
       <SpecialityMenu/>
       <TopDocters/>
       <Banar/>
-      <DoctorDashboard/>
-      
     </div>
   )
 }

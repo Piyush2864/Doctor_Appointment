@@ -1,114 +1,154 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { getDoctor } from '../Api/doctorApi'; 
-import { GetAppointmentsByDoctor} from '../Api/appointmentApi'
+import React, { useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
+import { getDoctor } from "../Api/doctorApi";
+import { GetAppointmentsByDoctor } from "../Api/appointmentApi";
 
 export default function DoctorDashboard() {
-  const { doctorId } = useParams(); // Get doctorId from the URL params
+  const { doctorId } = useParams(); // Get doctorId from URL params
   const [profile, setProfile] = useState(null);
   const [appointments, setAppointments] = useState([]);
   const [statistics, setStatistics] = useState({});
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("overview"); // Manage active section
 
-  // Fetch doctor's profile, appointments, and statistics
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch doctor profile
+        console.log("Fetching Doctor Data for ID:", doctorId);
+
         const profileData = await getDoctor(doctorId);
         setProfile(profileData);
 
-        // Fetch doctor's appointments using GetAppointmentsByDoctor API
-        const appointmentsData = await GetAppointmentsByDoctor(doctorId); // Ensure correct function call with doctorId
+        const appointmentsData = await GetAppointmentsByDoctor(doctorId);
         setAppointments(appointmentsData);
 
-        // Here you would also need a similar API for statistics (if available)
-        // Example: const statisticsData = await getStatistics(doctorId);
-        // setStatistics(statisticsData);
-
-        // Since we don't have statistics API in your example, let's assume static data for now.
-        setStatistics({ totalAppointments: 100, todayAppointments: 5, totalIncome: 1500 });
-
+        setStatistics({
+          totalAppointments: 100,
+          todayAppointments: 5,
+          totalIncome: 1500,
+        });
       } catch (error) {
-        console.error('Error fetching data', error);
+        console.log("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [doctorId]); // Dependency on doctorId to refetch data if doctorId changes
+  }, [doctorId]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div className="text-center text-lg font-semibold mt-10">Loading...</div>;
 
-  return (
-    <div className="dashboard">
-      <h2 className="text-2xl font-bold text-center">Doctor Dashboard</h2>
-
-      {/* Profile Overview */}
+  // Define tab components
+  const Overview = () => (
+    <div className="bg-gray-100 p-4 rounded-lg">
+      <h3 className="text-xl font-semibold text-gray-700 mb-3">Profile Overview</h3>
       {profile && (
-        <div className="profile-section">
-          <h3 className="text-xl font-semibold">Profile Overview</h3>
-          <div className="profile-info">
-            <img
-              src={profile?.profilePicture || '/default-avatar.png'}
-              alt="Profile"
-              className="profile-image"
-            />
-            <div>
-              <h4>{profile?.name}</h4>
-              <p>{profile?.specialization}</p>
-              <p>{profile?.email}</p>
-              <p>{profile?.contactNumber}</p>
-            </div>
+        <div className="flex items-center gap-4">
+          <img
+            src={profile?.profilePicture || "/default-avatar.png"}
+            alt="Profile"
+            className="w-24 h-24 rounded-full border border-gray-300"
+          />
+          <div>
+            <h4 className="text-lg font-bold">{profile?.name}</h4>
+            <p className="text-gray-600">{profile?.specialization?.join(", ")}</p>
+            <p className="text-gray-600">{profile?.email}</p>
+            <p className="text-gray-600">{profile?.contactNumber}</p>
           </div>
-          <Link to={`/doctor/edit-profile/${doctorId}`} className="edit-profile-link">
-            Edit Profile
-          </Link>
         </div>
       )}
+      <Link to={`/doctor/edit-profile/${doctorId}`} className="mt-3 inline-block text-blue-500 hover:underline">
+        Edit Profile
+      </Link>
+    </div>
+  );
 
-      {/* Appointment Management */}
-      <div className="appointments-section">
-        <h3 className="text-xl font-semibold">Upcoming Appointments</h3>
-        {appointments?.length === 0 ? (
-          <p>No upcoming appointments</p>
-        ) : (
-          <ul>
-            {appointments?.map((appointment) => (
-              <li key={appointment?._id} className="appointment-item">
-                <p>{appointment?.patientName}</p>
-                <p>{appointment?.date}</p>
-                <Link to={`/appointments/${appointment?._id}`} className="view-details">
-                  View Details
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+  const Appointments = () => (
+    <div className="bg-gray-100 p-4 rounded-lg">
+      <h3 className="text-xl font-semibold text-gray-700 mb-3">Upcoming Appointments</h3>
+      {appointments?.length === 0 ? (
+        <p className="text-gray-500">No upcoming appointments</p>
+      ) : (
+        <ul className="space-y-3">
+          {appointments?.map((appointment) => (
+            <li key={appointment?._id} className="p-3 bg-white shadow rounded-lg">
+              <p className="text-lg font-semibold text-gray-800">{appointment?.patientName}</p>
+              <p className="text-gray-600">{appointment?.date}</p>
+              <Link to={`/appointments/${appointment?._id}`} className="text-blue-500 hover:underline">
+                View Details
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
 
-      {/* Statistics */}
-      <div className="statistics-section">
-        <h3 className="text-xl font-semibold">Statistics</h3>
-        <div className="statistics-info">
-          <p>Total Appointments: {statistics?.totalAppointments}</p>
-          <p>Patients Seen Today: {statistics?.todayAppointments}</p>
-          <p>Total Income: {statistics?.totalIncome} USD</p>
+  const Statistics = () => (
+    <div className="bg-gray-100 p-4 rounded-lg">
+      <h3 className="text-xl font-semibold text-gray-700 mb-3">Statistics</h3>
+      <div className="grid grid-cols-3 gap-4 text-center">
+        <div className="bg-white p-3 rounded-lg shadow">
+          <p className="text-lg font-bold text-gray-700">{statistics?.totalAppointments}</p>
+          <p className="text-gray-500">Total Appointments</p>
+        </div>
+        <div className="bg-white p-3 rounded-lg shadow">
+          <p className="text-lg font-bold text-gray-700">{statistics?.todayAppointments}</p>
+          <p className="text-gray-500">Patients Seen Today</p>
+        </div>
+        <div className="bg-white p-3 rounded-lg shadow">
+          <p className="text-lg font-bold text-gray-700">${statistics?.totalIncome}</p>
+          <p className="text-gray-500">Total Income</p>
         </div>
       </div>
+    </div>
+  );
 
-      {/* Links to other sections */}
-      <div className="links">
-        <Link to={`/doctor/patient-management/${doctorId}`} className="link">
-          Patient Management
-        </Link>
-        <Link to={`/doctor/billing/${doctorId}`} className="link">
-          Billing
-        </Link>
-        <Link to={`/doctor/settings/${doctorId}`} className="link">
-          Settings
-        </Link>
+  return (
+    <div className="flex max-w-6xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+      {/* Sidebar */}
+      <div className="w-1/4 bg-gray-100 p-4 rounded-lg">
+        <h3 className="text-lg font-bold mb-4">Menu</h3>
+        <ul className="space-y-2">
+          <li>
+            <button
+              onClick={() => setActiveTab("overview")}
+              className={`block w-full text-left p-2 rounded-lg ${
+                activeTab === "overview" ? "bg-blue-500 text-white" : "hover:bg-blue-100 text-gray-700"
+              }`}
+            >
+              Profile Overview
+            </button>
+          </li>
+          <li>
+            <button
+              onClick={() => setActiveTab("appointments")}
+              className={`block w-full text-left p-2 rounded-lg ${
+                activeTab === "appointments" ? "bg-blue-500 text-white" : "hover:bg-blue-100 text-gray-700"
+              }`}
+            >
+              Appointments
+            </button>
+          </li>
+          <li>
+            <button
+              onClick={() => setActiveTab("statistics")}
+              className={`block w-full text-left p-2 rounded-lg ${
+                activeTab === "statistics" ? "bg-blue-500 text-white" : "hover:bg-blue-100 text-gray-700"
+              }`}
+            >
+              Statistics
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      {/* Main Content */}
+      <div className="w-3/4 ml-4">
+        {activeTab === "overview" && <Overview />}
+        {activeTab === "appointments" && <Appointments />}
+        {activeTab === "statistics" && <Statistics />}
       </div>
     </div>
   );

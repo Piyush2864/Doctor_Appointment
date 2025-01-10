@@ -1,25 +1,26 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const PatientsSlice = createSlice({
-  name: "patients",
-  initialState: {
-    patients: {
-      name: "",
-      email: "",
-      password: "",
-      age: "",
-      gender: "Male",
-      contactNumber: "",
-      profilePicture: null,
-    },
-  },
-  reducers: {
-    updateField : (state ,action)=>{
-        const {field , value} = action.payload
-        state[field] = value
-    },
-    resetFrom : ()=>initialState,
-}});
+const initialState = {
+  name: "",
+  email: "",
+  password: "",
+  age: "",
+  gender: "Male",
+  contactNumber: "",
+  profilePicture: null,
+};
 
-export const { updateField ,  resetFrom} = PatientsSlice.actions;
-export default PatientsSlice.reducer;
+const PatientSlice = createSlice({
+  name: "patient",
+  initialState,
+  reducers: {
+    updateField: (state, action) => {
+      const { field, value } = action.payload;
+      state[field] = value;
+    },
+    resetForm: () => initialState,  
+  },
+});
+
+export const { updateField, resetForm } = PatientSlice.actions;
+export default PatientSlice.reducer;
