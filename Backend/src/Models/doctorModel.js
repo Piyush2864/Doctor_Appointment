@@ -19,17 +19,17 @@ const doctorSchema = new Schema({
 
     specialization: {
         type: [String], 
-        required: true
+        // required: true
     },
 
     description: {
         type: String,
-        required: true
+        // required: true
     },
 
     experience: {
         type: String,
-        required: true
+        // required: true
     },
 
     contactNumber: {
@@ -42,21 +42,21 @@ const doctorSchema = new Schema({
             day: {
                 type: String,
                 enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-                required: true
+                // required: true
             },
             timings: [
                 {
                     startTime: {
                         type: String,
-                        required: true // e.g., "09:00 AM"
+                        // required: true // e.g., "09:00 AM"
                     },
                     endTime: {
                         type: String,
-                        required: true // e.g., "12:00 PM"
+                        // required: true // e.g., "12:00 PM"
                     },
                     slotDuration: {
                         type: Number, // Duration in minutes
-                        required: true // e.g., 30
+                        // required: true // e.g., 30
                     }
                 }
             ]
@@ -104,12 +104,12 @@ const doctorSchema = new Schema({
 
     clinicAddress: {
         type: String,
-        required: true
+        // required: true
     },
 
     city: {
         type: String,
-        required: true
+        // required: true
     },
 
     profilePicture: {
@@ -129,7 +129,7 @@ const doctorSchema = new Schema({
 
     fees: {
         type: String,
-        required: true
+        // required: true
     },
 
     ratings: {

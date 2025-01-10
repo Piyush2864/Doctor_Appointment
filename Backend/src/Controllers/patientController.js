@@ -2,26 +2,47 @@ import PatientInfo from '../Models/patientModel.js';
 import bcrypt from 'bcrypt';
 import JWT from 'jsonwebtoken';
 
-
-export const registerPatientController = async(req, res)=> {
-    const { name, email, password, age, gender, contactNumber } = req.body;
-    const profilePicture = req.file ? req.file.path : null;
+export const registerPatientController = async (req, res) => {
     try {
-        const existingPatient = await PatientInfo.findOne({ email });
-        if(existingPatient){
+        const { name, email, password, age, gender, contactNumber } = req.body;
+        console.log("Received data:", req.body);
+
+        const profilePicture = req.file ? req.file.path : null;
+
+        // ✅ Validate Required Fields
+        if (!name || !email || !password || !age || !gender || !contactNumber) {
             return res.status(400).json({
                 success: false,
-                message: 'Patient already exists!'
+                message: "All fields are required!",
             });
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        // ✅ Check if Patient Already Exists
+        const existingPatient = await PatientInfo.findOne({ email });
+        if (existingPatient) {
+            return res.status(400).json({
+                success: false,
+                message: 'Patient already exists!',
+            });
+        }
 
+        // ✅ Corrected Password Validation
+        if (!password) { // ❌ Previously, it was checking "if (password)" incorrectly
+            return res.status(400).json({
+                success: false,
+                message: "Password is required!",
+            });
+        }
+
+        // ✅ Hash Password
+        const hashedPassword = await bcrypt.hash(password, 10); // ✅ Ensure password is valid
+
+        // ✅ Create New Patient Record
         const patient = new PatientInfo({
             name,
             email,
-            password: hashedPassword,
-            age, 
+            password: hashedPassword, // ✅ Store hashed password
+            age,
             gender,
             contactNumber,
             profilePicture
@@ -33,15 +54,16 @@ export const registerPatientController = async(req, res)=> {
             success: true,
             message: 'Patient registered successfully.',
             data: patient
-        })
+        });
     } catch (error) {
-        console.error('Error registering patient.:', error);
+        console.error('Error registering patient:', error);
         return res.status(500).json({
             success: false,
             message: 'Server error.'
         });
     }
 };
+
 
 
 export const loginPatientController = async(req, res)=> {

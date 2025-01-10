@@ -1,41 +1,57 @@
-import DoctorInfo from '../Models/doctorModel.js'
+import DoctorInfo from '../Models/doctorModel.js';
 import bcrypt from 'bcrypt';
 import JWT from 'jsonwebtoken';
 
-
 export const registerDoctorController = async (req, res) => {
-    const { name, email, password, specialization, description, experience, contactNumber, shifts, clinicAddress, city, fees, videoConsultationTimings, maxVideoConsultationsPerDay, emergencyAvailability } = req.body;
-    const profilePicture = req.file ? req.file.path : null;
-
     try {
+        const { 
+            name, email, password, 
+            contactNumber, 
+        } = req.body;
+        
+        const profilePicture = req.file ? req.file.path : null;
+
+        // Validate required fields
+        if (!name || !email || !password || !contactNumber) {
+            return res.status(400).json({ 
+                success: false, 
+                message: "All required fields must be provided." 
+            });
+        }
+
+        // Check if doctor already exists
         const existingDoctor = await DoctorInfo.findOne({ email });
         if (existingDoctor) {
             return res.status(400).json({
                 success: false,
-                message: 'Doctor already exists.'
+                message: "Doctor already exists."
             });
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        // Hash password
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
 
+        // Create doctor entry
         const doctor = new DoctorInfo({
             name,
             email,
             password: hashedPassword,
-            specialization,
-            description,
-            experience,
+            // specialization,
+            // description,
+            // experience,
             contactNumber,
-            shifts,
-            clinicAddress,
-            city,
-            profilePicture,
-            fees,
-            videoConsultationTimings,
-            maxVideoConsultationsPerDay,
-            emergencyAvailability
+            // shifts,
+            // clinicAddress,
+            // city,
+            // profilePicture,
+            // fees,
+            // videoConsultationTimings: videoConsultationTimings || [],
+            // maxVideoConsultationsPerDay: maxVideoConsultationsPerDay || 0,
+            // emergencyAvailability: emergencyAvailability || false
         });
 
+        // Save doctor to database
         await doctor.save();
 
         return res.status(201).json({
@@ -44,13 +60,14 @@ export const registerDoctorController = async (req, res) => {
             data: doctor
         });
     } catch (error) {
-        console.error('Error registering doctor:', error);
+        console.error("Error registering doctor:", error);
         return res.status(500).json({
             success: false,
-            message: "Server error."
+            message: "Server error. Please try again later."
         });
     }
 };
+
 
 
 export const loginDoctorController = async(req, res)=> {
