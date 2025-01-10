@@ -18,6 +18,7 @@ import ProfileComponent from './Componets/ProfileComponent'
 // import PatientProfile from './Componets/PatientComponent'
 // import PatientComponent from './Componets/PatientComponent'
 import DoctorDashboard from './Componets/DoctersDashbord'
+import PatientsSingup from './Pages/PatientsSingup'
 
 
 
@@ -43,7 +44,7 @@ export default function App() {
         <Route path='/my-profile' element={<MyProfile/>} />
         <Route path='/my-appointments' element={<MyAppointments/>} />
         <Route  path='/appointment/:docid' element={<Appointment/>}/>
-        {/* <Route path='/patients/singup' element={<Patients/>} /> */}
+        <Route path='/patients/singup' element={<PatientsSingup/>} />
         <Route path='/doctor-profile' element={<ProfileComponent/>} />
         {/* <Route path="/patient-profile" element={<PatientComponent/>}/> */}
 
