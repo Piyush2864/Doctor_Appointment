@@ -1,17 +1,22 @@
 import JWT from 'jsonwebtoken';
+import configDotenv from 'dotenv';
 
 
+configDotenv.config();
 export const authenticateUser = (req, res, next) => {
     try {
         const token = req.headers.authorization?.split(" ")[1];
+        // console.log("nsvksnvksfnsn", token)
         if (!token) {
             return res.status(401).json({
                 success: false,
                 message: 'Access Denied! No token provided'
             });
         }
-        const secretKey = process.env.JWT_SECRET || 'Piyush123'
+        const secretKey = process.env.JWT_SECRET || 'Piyush123llllllll'
+        // console.log("secret", secretKey)
         const decoded = JWT.verify(token, secretKey);
+        // console.log("npnpnpnpnp", decoded)
         req.user = decoded;
         next();
     } catch (error) {
