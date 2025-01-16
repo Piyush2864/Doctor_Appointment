@@ -2,7 +2,10 @@ import DoctorInfo from '../Models/doctorModel.js'
 import bcrypt from 'bcrypt';
 import configDotenv from 'dotenv';
 import JWT from 'jsonwebtoken';
+
+//New code Q
 configDotenv.config();
+
 
 
 export const registerDoctorController = async (req, res) => {
