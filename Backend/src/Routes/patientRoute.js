@@ -19,13 +19,14 @@ import { upload } from '../Middlewares/multerMiddleware.js';
 
 const router = express.Router();
 
-router.route('/signup').post(upload, registerPatientController);
+router.route('/signup').post(upload.single('profilePicture'), registerPatientController);
+
 
 router.route('/login').post(loginPatientController);
 
 router.route('/get-patient/:id').get(authenticateUser, authorizeRoles('Admin', 'Patient'), getPatientByIdController);
 
-router.route('/update-patient/:id').put(authenticateUser, authorizeRoles('Patient'), updatePatientController);
+router.route('/update-patient/:id').put(authenticateUser, authorizeRoles('Patient'), upload.single('profilePicture'), updatePatientController);
 
 router.route('/appointment-history').post(authenticateUser, authorizeRoles('Admin', 'Patient'), addAppointmentToHistoryController);
 
