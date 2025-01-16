@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { adminLogin } from '../Redux/CreateSlice/AdminSlice';
 
 export default function Signup() {
-  const [role, setRole] = useState('patient'); 
+  const [role, setRole] = useState('patient'); // Default role is patient
   const [formdata, setFormdata] = useState({
     name: '',
     email: '',
@@ -22,67 +22,96 @@ export default function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
+      const response = await axios.post (
         `http://localhost:8080/api/v1/appointment/${role}/signup`, 
         formdata
       );
       console.log('Signup Success:', response.data);
-      dispatch(adminLogin(response.data));
-      navigate('/');  
+
+      // Check if role is admin to dispatch adminLogin
+      if (role === 'admin') {
+        dispatch(adminLogin(response.data)); // Dispatch admin login if the role is admin
+      }
+
+      // After successful signup, navigate to the login page
+      navigate('/login');  
     } catch (error) {
       console.error('Signup Error:', error.response ? error.response.data : error.message);
     }
   };
 
   return (
-    <div className="p-4">
-      <div className="flex space-x-4 mb-4">
-        <button 
-          className={`p-2 rounded-md ${role === 'patient' ? 'bg-blue-500 text-white' : 'bg-gray-300'}`} 
-          onClick={() => setRole('patient')}
-        >
-          Patient
-        </button>
-        <button 
-          className={`p-2 rounded-md ${role === 'doctor' ? 'bg-blue-500 text-white' : 'bg-gray-300'}`} 
-          onClick={() => setRole('doctor')}
-        >
-          Doctor
-        </button>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
+        <h2 className="text-2xl font-semibold text-center mb-6">{role === 'patient' ? 'Patient Signup' : role === 'doctor' ? 'Doctor Signup' : 'Admin Signup'}</h2>
+
+        <div className="flex justify-center space-x-4 mb-6">
+          <button 
+            className={`p-3 rounded-lg ${role === 'patient' ? 'bg-blue-500 text-white' : 'bg-gray-300'}`} 
+            onClick={() => setRole('patient')}
+          >
+            Patient
+          </button>
+          <button 
+            className={`p-3 rounded-lg ${role === 'doctor' ? 'bg-blue-500 text-white' : 'bg-gray-300'}`} 
+            onClick={() => setRole('doctor')}
+          >
+            Doctor
+          </button>
+          <button 
+            className={`p-3 rounded-lg ${role === 'admin' ? 'bg-blue-500 text-white' : 'bg-gray-300'}`} 
+            onClick={() => setRole('admin')}
+          >
+            Admin
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <input 
+              type="text" 
+              name="name" 
+              placeholder="Full Name" 
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              value={formdata.name}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="mb-4">
+            <input 
+              type="email" 
+              name="email" 
+              placeholder="Email" 
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              value={formdata.email}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="mb-6">
+            <input 
+              type="password" 
+              name="password" 
+              placeholder="Password" 
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              value={formdata.password}
+              onChange={handleChange}
+            />
+          </div>
+
+          <button 
+            type="submit" 
+            className="w-full p-3 text-white font-semibold rounded-lg bg-blue-500 hover:bg-blue-600 focus:ring-2 focus:ring-blue-500"
+          >
+            Signup as {role.charAt(0).toUpperCase() + role.slice(1)}
+          </button>
+        </form>
+
+        <div className="mt-4 text-center">
+          <Link to="/login" className="text-blue-500">Already have an account? Login</Link>
+        </div>
       </div>
-
-      <h2 className="text-xl font-semibold mb-4">{role === 'patient' ? 'Patient Signup' : 'Doctor Signup'}</h2>
-
-      <form onSubmit={handleSubmit}>
-        <input 
-          type="text" 
-          name="name" 
-          placeholder="Name" 
-          className="border-2 border-gray-200 p-2 m-2 rounded-md w-full"
-          value={formdata.name}
-          onChange={handleChange}
-        />
-        <input 
-          type="text" 
-          name="email" 
-          placeholder="Email" 
-          className="border-2 border-gray-200 p-2 m-2 rounded-md w-full"
-          value={formdata.email}
-          onChange={handleChange}
-        />
-        <input 
-          type="password" 
-          name="password" 
-          placeholder="Password" 
-          className="border-2 border-gray-200 p-2 m-2 rounded-md w-full"
-          value={formdata.password}
-          onChange={handleChange}
-        />
-        <button type="submit" className="bg-blue-500 text-white p-2 m-2 rounded-md w-full">
-          Signup as {role.charAt(0).toUpperCase() + role.slice(1)}
-        </button>
-        <Link to="/login" className="text-blue-500 p-2 m-2 block text-center">Login</Link>
-      </form>
     </div>
   );
 }

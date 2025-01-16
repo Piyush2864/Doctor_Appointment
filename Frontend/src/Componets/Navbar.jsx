@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import logo123 from "../assets/logo123.jpg";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import Man_image from "../assets/image_man.jpg";
+// import { RiArrowDropDownLine } from "react-icons/ri";
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -10,7 +11,17 @@ export default function Navbar() {
   
   return (
     <div className="flex justify-between items-center text-sm py-4 mb-5 border-b border-gray-400">
+
+     <div>
+     <button
+        className="md:hidden fixed top-5 left-5 z-10 text-white text-2xl"
+       onClick={() => setSidebarVisible(!sidebarVisible)}
+      >
+     </button>
       <img onClick={()=>navigate('/')} className="w-10 cursor-pointer" src={logo123} alt="Logo" />
+      
+     </div>
+
       <ul className="hidden md:flex items-start gap-6 font-medium">
         <li className="py-1">
           <Link to="/">HOME</Link>

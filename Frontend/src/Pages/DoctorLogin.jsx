@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { doctorLogin } from "../Api/doctorApi"
-import {Link} from "react-router-dom"
-
+import { doctorLogin } from "../Api/doctorApi";
+import { Link } from "react-router-dom";
 
 export default function DoctorLogin() {
   const [email, setEmail] = useState("");
@@ -24,21 +23,20 @@ export default function DoctorLogin() {
     }
 
     try {
-      const data = await doctorLogin(email, password); 
+      const data = await doctorLogin(email, password);
 
-      if (data.token) {
-
+      if (data?.token) {
         if (rememberMe) {
           localStorage.setItem("doctorToken", data.token);
         } else {
           sessionStorage.setItem("doctorToken", data.token);
         }
-        navigate("/docter-dashbord");
+        navigate("/doctor-dashboard");
       } else {
         setError("Invalid email or password.");
       }
-    } catch (errorMessage) {
-      setError(errorMessage);
+    } catch (error) {
+      setError(error.response?.data?.message || "An error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -96,12 +94,11 @@ export default function DoctorLogin() {
           </button>
 
           <p className="text-sm text-gray-600">
-            Don't have an account?{' '}
+            Don't have an account?{" "}
             <Link to="/doctors/doctorsingup" className="text-blue-500 font-semibold hover:underline">
               Signup
             </Link>
           </p>
-          
         </div>
       </form>
     </div>

@@ -4,7 +4,7 @@ import { doctorSignup } from "../Api/doctorApi";
 
 export default function DoctorSignup() {
   const [doctorData, setDoctorData] = useState({
-    name: "",  // ✅ Changed `fullName` to `name`
+    name: "",  
     email: "",
     password: "",
     confirmPassword: "",
@@ -23,7 +23,7 @@ export default function DoctorSignup() {
 
   const validate = () => {
     const newErrors = {};
-    if (!doctorData.name) newErrors.name = "Full name is required";  // ✅ Changed validation
+    if (!doctorData.name) newErrors.name = "Full name is required";  
     if (!doctorData.email) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(doctorData.email)) {

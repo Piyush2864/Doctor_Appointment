@@ -11,14 +11,15 @@ import Login from "./Pages/Login";
 import Appointment from './Pages/Appointment';
 import Footer from './Componets/Footer';
 import Signup from "./Pages/Singup"
-// import Patients from './Pages/Patients'
 import DoctorSingup from './Pages/DoctorSingup'
 import DoctorLogin from './Pages/DoctorLogin'
 import ProfileComponent from './Componets/ProfileComponent'
 // import PatientProfile from './Componets/PatientComponent'
-// import PatientComponent from './Componets/PatientComponent'
 import DoctorDashboard from './Componets/DoctersDashbord'
 import PatientsSingup from './Pages/PatientsSingup'
+import PatientProfile from './Componets/PatientProfle'
+import PatientDashbord from './Componets/PatientDashbord'
+import DoctorDetials from "./Componets/DoctorDetials"
 
 
 
@@ -36,17 +37,19 @@ export default function App() {
         <Route path='/singup' element={<Signup/>} />
         <Route path='/doctors/doctorsingup' element={<DoctorSingup/>} />
         <Route path='/doctors/doctorslogin' element={<DoctorLogin/>} />
-        <Route path='/docter-dashbord' element={<DoctorDashboard/>} />
+        <Route path='/doctor-profile/:doctorId' element={<ProfileComponent/>} />
+        <Route path='/doctor-details/:doctorId' element={<DoctorDetials/>} />
+        <Route path='/doctor-dashboard' element={<DoctorDashboard/>} />
         <Route path='/login' element={<Login/>} />
         <Route path='/signup' element={<Signup/>} />
         <Route path='/About' element={<About/>} />
         <Route path='/contact' element={<Contact/>} />
         <Route path='/my-profile' element={<MyProfile/>} />
         <Route path='/my-appointments' element={<MyAppointments/>} />
-        <Route  path='/appointment/:docid' element={<Appointment/>}/>
+        <Route  path='/appointment/:docId' element={<Appointment/>}/>
         <Route path='/patients/singup' element={<PatientsSingup/>} />
-        <Route path='/doctor-profile' element={<ProfileComponent/>} />
-        {/* <Route path="/patient-profile" element={<PatientComponent/>}/> */}
+        <Route path ="/patients-profile" element={<PatientProfile/>}  />
+        <Route path ="/patient-dashboard" element={<PatientDashbord/>} />
 
       </Routes>
 

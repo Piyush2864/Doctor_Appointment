@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { PatientSignup } from '../Api/patientApi';
 import { useNavigate } from 'react-router-dom';
 
-
 export default function PatientsSignup() {
   const [formData, setFormData] = useState({
     name: '',
@@ -18,8 +17,7 @@ export default function PatientsSignup() {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
 
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -44,6 +42,9 @@ export default function PatientsSignup() {
     try {
       const response = await PatientSignup(formDataToSend);
       setSuccess(response.message);
+      
+      // After successful signup, navigate to login page
+      navigate("/login");
     } catch (err) {
       setError(err.response?.data?.message || 'Signup failed');
     } finally {
@@ -90,8 +91,8 @@ export default function PatientsSignup() {
           >
             <option value="">Select Gender</option>
             <option value="Male">Male</option>
-            <option value="female">Female</option>
-            <option value="other" >Other</option>
+            <option value="Female">Female</option>
+            <option value="Other" >Other</option>
           </select>
 
           <input 
@@ -105,13 +106,13 @@ export default function PatientsSignup() {
             className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
           />
 
-          <button  onClick={()=>navigate("/")}
+          <button 
             type="submit" disabled={loading}
             className={`w-full p-3 text-white font-semibold rounded-lg ${
               loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'
             }`}
           >
-            {loading  ? 'Signing Up...' : 'Signup'}
+            {loading ? 'Signing Up...' : 'Signup'}
           </button>
         </form>
       </div>

@@ -1,18 +1,32 @@
 import React, { useState, useEffect } from "react";
-import { BookAppointment } from "../Api/appointmentApi"; 
+import { BookAppointment } from "../Api/appointmentApi";
 
 const BookAppointmentComponent = () => {
     const [doctors, setDoctors] = useState([]);
     const [formData, setFormData] = useState({
         doctorId: "",
-        patientId: "",  
+        patientId: "",
         date: "",
         timeSlot: "",
         reasonForVisit: ""
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+  
+    // Fetch doctors' list from API on component mount
+    useEffect(() => {
+        const fetchDoctors = async () => {
+            try {
+                const response = await fetch("/api/doctors");
+                const data = await response.json();
+                setDoctors(data);
+            } catch (err) {
+                setError("Failed to load doctors. Please try again.");
+            }
+        };
 
+        fetchDoctors();
+    }, []);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -23,12 +37,24 @@ const BookAppointmentComponent = () => {
         setLoading(true);
         setError("");
 
+        if (!formData.doctorId || !formData.patientId || !formData.date || !formData.timeSlot) {
+            setError("Please fill all the required fields.");
+            setLoading(false);
+            return;
+        }
+
         try {
-          
             await BookAppointment(formData);  
             alert("Appointment booked successfully!");
+            setFormData({
+                doctorId: "",
+                patientId: "",
+                date: "",
+                timeSlot: "",
+                reasonForVisit: ""
+            });
         } catch (err) {
-            setError("Failed to book appointment");
+            setError("Failed to book appointment. Please try again.");
         } finally {
             setLoading(false);
         }
@@ -42,7 +68,6 @@ const BookAppointmentComponent = () => {
                 {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
                 <div className="space-y-4">
-                  
                     <input
                         type="text"
                         name="patientId"
@@ -61,11 +86,15 @@ const BookAppointmentComponent = () => {
                         required
                     >
                         <option value="">Select Doctor</option>
-                        {doctors.map((doctor) => (
-                            <option key={doctor._id} value={doctor._id}>
-                                {doctor.name} - {doctor.specialization}
-                            </option>
-                        ))}
+                        {doctors.length > 0 ? (
+                            doctors.map((doctor) => (
+                                <option key={doctor._id} value={doctor._id}>
+                                    {doctor.name} - {doctor.specialization}
+                                </option>
+                            ))
+                        ) : (
+                            <option disabled>Loading doctors...</option>
+                        )}
                     </select>
 
                     <input 

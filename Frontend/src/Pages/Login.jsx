@@ -1,53 +1,84 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { adminLogin } from '../Redux/CreateSlice/AdminSlice';
+import { PatientLogin } from '../Api/patientApi'; // ✅ Import API function
+import axios from 'axios';
 
 export default function Login() {
   const [data, setData] = useState({
     email: '',
     password: '',
-    rememberMe: false,
+    role: 'admin',  // ✅ Default role is admin
   });
+
+  const [error, setError] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setData((prevData) => ({
       ...prevData,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: value,
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+
     try {
-      const response = await axios.post(
-        'http://localhost:8080/api/v1/appointment/admin/login',
-        data
-      );
-      console.log('Login Success:', response.data);
-      dispatch(adminLogin(response.data));
-      navigate('/');
+      let response;
+
+      if (data.role === 'admin') {
+        // ✅ Admin Login API Call
+        response = await axios.post('http://localhost:8080/api/v1/appointment/admin/login', {
+          email: data.email,
+          password: data.password,
+        });
+
+        dispatch(adminLogin(response.data));
+        navigate('/'); // ✅ Redirect to admin dashboard
+      } else {
+        // ✅ Patient Login API Call
+        response = await PatientLogin(data.email, data.password);
+
+        if (response.success) {
+          navigate('/'); // ✅ Redirect to patient dashboard
+        } else {
+          setError(response.message || 'Login failed!');
+        }
+      }
     } catch (error) {
-      console.error('Login Error:', error.response ? error.response.data : error.message);
+      setError('Login failed! Please check your credentials.');
     }
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="w-full max-w-sm bg-white p-8 rounded-lg shadow-lg">
-        <h2 className="text-3xl font-semibold text-center text-blue-600 mb-6">Admin Login</h2>
+        <h2 className="text-3xl font-semibold text-center text-blue-600 mb-6">Login</h2>
+
+        {error && <p className="text-red-500 text-center">{error}</p>}
 
         <form onSubmit={handleSubmit}>
           <div className="space-y-4">
+            <select
+              name="role"
+              className="w-full px-4 py-2 border-2 border-gray-300 rounded-md"
+              value={data.role}
+              onChange={handleChange}
+            >
+              <option value="admin">Admin</option>
+              <option value="patient">Patient</option>
+            </select>
+
             <input
               type="email"
               name="email"
               placeholder="Email"
-              className="w-full px-4 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border-2 border-gray-300 rounded-md"
               value={data.email}
               onChange={handleChange}
               required
@@ -57,33 +88,15 @@ export default function Login() {
               type="password"
               name="password"
               placeholder="Password"
-              className="w-full px-4 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border-2 border-gray-300 rounded-md"
               value={data.password}
               onChange={handleChange}
               required
             />
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  name="rememberMe"
-                  className="h-4 w-4 text-blue-600 border-gray-300 rounded"
-                  checked={data.rememberMe}
-                  onChange={handleChange}
-                />
-                <label htmlFor="rememberMe" className="ml-2 text-sm text-gray-600">
-                  Remember Me
-                </label>
-              </div>
-              <Link to="/forgot-password" className="text-sm text-blue-500 hover:underline">
-                Forgot Password?
-              </Link>
-            </div>
-
             <button
               type="submit"
-              className="w-full py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition duration-200"
+              className="w-full py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700"
             >
               Login
             </button>
@@ -93,9 +106,7 @@ export default function Login() {
         <div className="mt-4 text-center">
           <p className="text-sm text-gray-600">
             Don't have an account?{' '}
-            <Link to="/signup" className="text-blue-500 font-semibold hover:underline">
-              Signup
-            </Link>
+            <Link to="/signup" className="text-blue-500 font-semibold">Signup</Link>
           </p>
         </div>
       </div>
