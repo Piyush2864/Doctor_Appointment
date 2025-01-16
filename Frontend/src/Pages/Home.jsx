@@ -1,9 +1,9 @@
 import React from 'react'
-import Header from '../Componets/Header'
-import SpecialityMenu from '../Componets/SpecialityMenu'
-import TopDocters from '../Componets/TopDocters'
-import Banar from '../Componets/Banar'
-import DoctorDashboard from '../Componets/DoctersDashbord'
+import Header from '../Components/Header'
+import SpecialityMenu from '../Components/SpecialityMenu'
+import TopDocters from '../Components/TopDocters'
+import DoctorDashboard from '../Components/DoctersDashbord'
+import Banar from '../Components/Banar'
 
 export default function Home() {
   return (

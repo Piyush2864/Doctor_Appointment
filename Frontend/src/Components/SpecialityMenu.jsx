@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { SpecialityData } from '../assets/SpecialityData'
+// import { SpecialityData } from '../assets/SpecialityData'
 
 export default function SpecialityMenu() {
   return (

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import logo123 from "../assets/logo123.jpg";
+// import logo123 from "../assets/logo123.jpg";
 import { RiArrowDropDownLine } from "react-icons/ri";
-import Man_image from "../assets/image_man.jpg";
+// import Man_image from "../assets/image_man.jpg";
 
 export default function Navbar() {
   const navigate = useNavigate();

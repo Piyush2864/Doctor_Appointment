@@ -1,8 +1,8 @@
 import React from "react";
 import { FaArrowRight } from "react-icons/fa";
-import docterImage from "../assets/docterimages.jpg";
+// import docterImage from "../assets/docterimages.jpg";
 
-import docterGroup from "../assets/Docter4image1.jpg";
+// import docterGroup from "../assets/Docter4image1.jpg";
 
 export default function Header() {
   return (

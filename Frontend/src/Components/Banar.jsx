@@ -1,5 +1,5 @@
 import React from 'react'
-import DocterImage from '../assets/doctergril.jpg'
+// import DocterImage from '../assets/doctergril.jpg'
 import { useNavigate } from 'react-router-dom';
 
 export default function Banar() {
