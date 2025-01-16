@@ -16,5 +16,10 @@ export default function Home() {
         <Banner />
       </div>
     </div>
+<<<<<<< HEAD
   );
 }
+=======
+  )
+}
+>>>>>>> 470953685ca541b2bc11bb467c1dd969edd69726

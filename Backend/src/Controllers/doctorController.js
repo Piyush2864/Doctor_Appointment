@@ -1,6 +1,8 @@
 import DoctorInfo from '../Models/doctorModel.js';
 import bcrypt from 'bcrypt';
+import configDotenv from 'dotenv';
 import JWT from 'jsonwebtoken';
+
 
 export const registerDoctorController = async (req, res) => {
     try {
@@ -90,13 +92,15 @@ export const loginDoctorController = async(req, res)=> {
             });
         }
 
-        const secretKey = process.env.JWT_SECRET || "Piyush123";
+        const secretKey = process.env.JWT_SCERETKEY 
+
         const token = JWT.sign({id: doctor._id, role: 'Doctor'}, secretKey, { expiresIn: "1d"});
 
         return res.status(200).json({
             success: true,
             message: "Login successfully.",
             token,
+            // role,
             data: doctor
         });
     } catch (error) {
@@ -174,8 +178,7 @@ export const updateDoctorController = async (req, res) => {
     let updates = req.body;
 
     try {
-        // Find the doctor by ID
-        const doctor = await DoctorInfo.findById(id);
+        const doctor = await DoctorInfo.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
         if (!doctor) {
             return res.status(404).json({
                 success: false,
@@ -205,8 +208,8 @@ export const updateDoctorController = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            message: "Doctor profile updated successfully.",
-            data: updatedDoctor,
+            message: 'Doctor profile updated successfully.',
+            data: doctor
         });
     } catch (error) {
         console.error("Error updating doctor profile:", error);

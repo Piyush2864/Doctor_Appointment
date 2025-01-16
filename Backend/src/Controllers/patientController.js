@@ -92,6 +92,7 @@ export const loginPatientController = async(req, res)=> {
             success: true,
             message: 'Login successfully.',
             token,
+            // role,
             data: patient
         });
     } catch (error) {
@@ -157,32 +158,42 @@ export const getPatientByIdController = async(req, res)=>{
 };
 
 
-export const updatePatientController = async(req, res)=> {
+export const updatePatientController = async (req, res) => {
     const { id } = req.params;
     const updates = req.body;
 
     try {
-        const patient = await PatientInfo.findByIdAndUpdate(id, updates, {new: true, runValidators: true});
-        if(!patient){
+        
+        if (req.file) {
+            updates.profilePicture = `${req.file.filename}`; 
+        }
+
+        const patient = await PatientInfo.findByIdAndUpdate(id, updates, {
+            new: true,
+            runValidators: true,
+        });
+
+        if (!patient) {
             return res.status(404).json({
                 success: false,
-                message: 'Patient not found.'
+                message: "Patient not found.",
             });
         }
 
         return res.status(200).json({
             success: true,
-            message: 'Patient profile updated successfully.',
-            data: patient
+            message: "Patient profile updated successfully.",
+            data: patient,
         });
     } catch (error) {
-        console.error('Error updating profile of patient.:', error);
+        console.error("Error updating profile of patient:", error);
         return res.status(500).json({
             success: false,
-            message: 'Server error.'
+            message: "Server error.",
         });
     }
 };
+
 
 
 export const deletePatientController = async(req, res)=> {

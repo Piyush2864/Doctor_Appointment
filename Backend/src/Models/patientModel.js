@@ -39,10 +39,10 @@ const patientSchema = new Schema({
 
     medicalHistory: [
         {
-            condition: { type: String },  // Condition/diagnosis e.g., "Headache"
-            treatment: { type: String },  // Treatment given or prescribed
-            visitDate: { type: Date },    // Date when the condition was noted
-            reasonForVisit: { type: String } // Reason for this consultation
+            condition: { type: String },  
+            treatment: { type: String },  
+            visitDate: { type: Date },    
+            reasonForVisit: { type: String } 
         }
     ],
 
