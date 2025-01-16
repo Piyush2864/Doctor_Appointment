@@ -1,6 +1,8 @@
 import DoctorInfo from '../Models/doctorModel.js'
 import bcrypt from 'bcrypt';
+import configDotenv from 'dotenv';
 import JWT from 'jsonwebtoken';
+configDotenv.config();
 
 
 export const registerDoctorController = async (req, res) => {
@@ -73,7 +75,8 @@ export const loginDoctorController = async(req, res)=> {
             });
         }
 
-        const secretKey = process.env.JWT_SECRET || "Piyush123";
+        const secretKey = process.env.JWT_SCERETKEY 
+
         const token = JWT.sign({id: doctor._id, role: 'Doctor'}, secretKey, { expiresIn: "1d"});
 
         return res.status(200).json({
@@ -155,27 +158,37 @@ export const updateDoctorController = async (req, res) => {
     const updates = req.body;
 
     try {
-        const doctor = await DoctorInfo.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
+        
+        if (req.file) {
+            updates.profilePicture = `${req.file.filename}`; 
+        }
+
+        const doctor = await DoctorInfo.findByIdAndUpdate(id, updates, {
+            new: true,
+            runValidators: true,
+        });
+
         if (!doctor) {
             return res.status(404).json({
                 success: false,
-                message: 'Doctor not found.'
+                message: "Doctor not found.",
             });
         }
 
         return res.status(200).json({
             success: true,
-            message: 'Doctor profile updated successfully.',
-            data: doctor
+            message: "Doctor profile updated successfully.",
+            data: doctor,
         });
     } catch (error) {
-        console.error('Error updating doctor profile:', error);
+        console.error("Error updating doctor profile:", error);
         return res.status(500).json({
             success: false,
-            message: "Server error."
+            message: "Server error.",
         });
     }
 };
+
 
 
 
