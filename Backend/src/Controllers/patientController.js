@@ -131,6 +131,7 @@ export const getAllPatientController = async(req, res)=> {
 
 export const getPatientByIdController = async(req, res)=>{
     const { id } = req.params;
+    console.log("hjkjghjbg", req.params)
 
     try {
         const patient = await PatientInfo.findById(id, '-password');

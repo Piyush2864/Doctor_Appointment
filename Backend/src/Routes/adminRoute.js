@@ -18,12 +18,12 @@ router.route('/update-admin/:id').put(authenticateUser, authorizeRoles('Admin'),
 router.route('/delete-admin/:id').delete(authenticateUser, authorizeRoles('Admin'), deleteAdminController);
 
 //Doctor
-router.route('/get-all-doctor').get(authenticateUser, authorizeRoles('Admin'), getAllDoctorsController);
+router.route('/get-all-doctor').get(authenticateUser, authorizeRoles('Admin', 'Patient', 'Doctor'), getAllDoctorsController);
 
 router.route('/delete-doctor/:id').delete(authenticateUser, authorizeRoles('Admin'), deleteDoctorController);
 
 //Patient
-router.route('/get-all-patient').get(authenticateUser, authorizeRoles('Admin'), getAllPatientController);
+router.route('/get-all-patient').get(authenticateUser, authorizeRoles('Admin', 'Doctor', 'Patient'), getAllPatientController);
 
 router.route('/delete-patient/:id').delete(authenticateUser, authorizeRoles('Admin'), deletePatientController);
 

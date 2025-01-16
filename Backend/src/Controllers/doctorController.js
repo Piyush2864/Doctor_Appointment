@@ -166,32 +166,57 @@ export const getDoctorByIdController = async(req, res)=> {
 };
 
 
+// import DoctorInfo from '../Models/doctorModel.js';
+import fs from 'fs';
+
 export const updateDoctorController = async (req, res) => {
     const { id } = req.params;
-    const updates = req.body;
+    let updates = req.body;
 
     try {
-        const doctor = await DoctorInfo.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
+        // Find the doctor by ID
+        const doctor = await DoctorInfo.findById(id);
         if (!doctor) {
             return res.status(404).json({
                 success: false,
-                message: 'Doctor not found.'
+                message: "Doctor not found.",
             });
         }
 
+        // Handle profile picture update if a new file is uploaded
+        if (req.file) {
+            // Delete old profile picture if it exists (optional)
+            if (doctor.profilePicture) {
+                fs.unlink(doctor.profilePicture, (err) => {
+                    if (err) console.error("Error deleting old image:", err);
+                });
+            }
+
+            // Update profilePicture field with new image path
+            updates.profilePicture = req.file.path;
+            console.log("object",req.file.path)
+        }
+
+        // Update the doctor profile with the provided updates
+        const updatedDoctor = await DoctorInfo.findByIdAndUpdate(id, updates, {
+            new: true,
+            runValidators: true,
+        });
+
         return res.status(200).json({
             success: true,
-            message: 'Doctor profile updated successfully.',
-            data: doctor
+            message: "Doctor profile updated successfully.",
+            data: updatedDoctor,
         });
     } catch (error) {
-        console.error('Error updating doctor profile:', error);
+        console.error("Error updating doctor profile:", error);
         return res.status(500).json({
             success: false,
-            message: "Server error."
+            message: "Server error.",
         });
     }
 };
+
 
 
 

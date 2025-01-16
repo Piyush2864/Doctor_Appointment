@@ -40,6 +40,8 @@ import cors from 'cors';
 import http from 'http'; 
 import { Server } from 'socket.io'; 
 import connectToDb from './src/Db/config.js';
+import path from "path";
+
 
 import doctorRoute from './src/Routes/doctorRoutes.js';
 import patientRoute from './src/Routes/patientRoute.js';
@@ -105,6 +107,20 @@ app.use('/api/v1/appointment/doctor', doctorRoute);
 app.use('/api/v1/appointment/patient', patientRoute);
 app.use('/api/v1/appointment/appointment', appointmentRoute);
 app.use('/api/v1/appointment/admin', adminRoute);
+// app.use("/public", express.static(path.join(process.cwd(), "public")));
+app.post("/upload",upload.single("profilePicture"), (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ success: false, message: "No file uploaded" });
+    }
+
+    const imageUrl = `/public/${req.file.filename}`; // Correct path
+
+    res.json({
+        success: true,
+        message: "Profile picture uploaded successfully.",
+        profilePicture: imageUrl, // Correct path
+    });
+});
 
 // Connect to the database
 connectToDb();
